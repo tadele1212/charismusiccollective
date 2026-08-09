@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register for a Class | Charis Music Collective</title>
+  <meta name="description" content="Register for music classes at Charis Music Collective. Piano, Guitar, Bass, Music Production, Mixing & Mastering. Online & In-Person.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+        <div class="brand-title">
+          CHARIS
+          <span>MUSIC COLLECTIVE</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="classes.html" class="nav-link">Classes</a>
+        <a href="instruments.html" class="nav-link">Instruments</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="check-status.html" class="nav-link" style="color: var(--primary-orange);"><i class="fas fa-search"></i> Check Status</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary active">JOIN A CLASS</a>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Banner -->
+  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 3rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary); text-align: center;">
+    <div class="container">
+      <span class="section-label">STUDENT REGISTRATION</span>
+      <h1 class="section-title">REGISTER FOR A CLASS</h1>
+      <p class="section-subtitle" style="margin: 0 auto;">Tell us a little about yourself and choose the program that is right for you.</p>
+    </div>
+  </section>
+
+  <!-- Registration Wizard Container -->
+  <section class="section-padding bg-secondary-section">
+    <div class="container">
+      <div class="registration-container">
+        
+        <!-- Step Progress Indicator -->
+        <div class="step-indicator">
+          <div class="step-item active" data-step="1">
+            <div class="step-number">1</div>
+            <span class="step-label">Personal</span>
+          </div>
+          <div class="step-item" data-step="2">
+            <div class="step-number">2</div>
+            <span class="step-label">Program</span>
+          </div>
+          <div class="step-item" data-step="3">
+            <div class="step-number">3</div>
+            <span class="step-label">Experience</span>
+          </div>
+          <div class="step-item" data-step="4">
+            <div class="step-number">4</div>
+            <span class="step-label">Format</span>
+          </div>
+          <div class="step-item" data-step="5">
+            <div class="step-number">5</div>
+            <span class="step-label">Schedule</span>
+          </div>
+          <div class="step-item" data-step="6">
+            <div class="step-number">6</div>
+            <span class="step-label">Goals</span>
+          </div>
+          <div class="step-item" data-step="7">
+            <div class="step-number">7</div>
+            <span class="step-label">Terms</span>
+          </div>
+        </div>
+
+        <form id="registration-form">
+          
+          <!-- STEP 1: Personal Information -->
+          <div class="form-step active" data-step="1">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 1: Personal Information</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Provide your contact details so we can manage your enrollment.</p>
+
+            <div class="form-group">
+              <label class="form-label" for="fullName">Full Name *</label>
+              <input type="text" id="fullName" class="form-control" placeholder="e.g. Kebede Alemu" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="phone">Phone Number *</label>
+                <input type="tel" id="phone" class="form-control" placeholder="+251 911 000 000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address *</label>
+                <input type="email" id="email" class="form-control" placeholder="student@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="telegramUsername">Telegram Username *</label>
+                <input type="text" id="telegramUsername" class="form-control" placeholder="@username" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="age">Age *</label>
+                <input type="number" id="age" class="form-control" min="5" max="100" placeholder="22" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="city">City</label>
+                <input type="text" id="city" class="form-control" placeholder="Addis Ababa" value="Addis Ababa">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="country">Country</label>
+                <input type="text" id="country" class="form-control" placeholder="Ethiopia" value="Ethiopia">
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <div></div>
+              <button type="button" class="btn btn-primary btn-next">CONTINUE TO CLASS SELECTION <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Choose Your Class -->
+          <div class="form-step" data-step="2">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 2: Choose Your Class / Program</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Select the primary music course you wish to study.</p>
+
+            <div class="option-cards-grid">
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Piano" checked>
+                <div class="option-card-content">
+                  <div class="option-card-icon">🎹</div>
+                  <strong>Piano</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Gospel & Modern</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Guitar">
+                <div class="option-card-content">
+                  <div class="option-card-icon">🎸</div>
+                  <strong>Guitar</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Acoustic & Electric</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Bass">
+                <div class="option-card-content">
+                  <div class="option-card-icon">🎸</div>
+                  <strong>Bass</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Groove & Timing</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Music Tutorial">
+                <div class="option-card-content">
+                  <div class="option-card-icon"><i class="fas fa-graduation-cap"></i></div>
+                  <strong>Music Tutorial</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Theory & Ear</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Music Arrangement">
+                <div class="option-card-content">
+                  <div class="option-card-icon"><i class="fas fa-sliders-h"></i></div>
+                  <strong>Music Arrangement</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Harmonies & Songs</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Mixing & Mastering">
+                <div class="option-card-content">
+                  <div class="option-card-icon"><i class="fas fa-compact-disc"></i></div>
+                  <strong>Mixing & Mastering</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Audio Engineering</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="program" value="Music Production">
+                <div class="option-card-content">
+                  <div class="option-card-icon"><i class="fas fa-laptop-house"></i></div>
+                  <strong>Music Production</strong>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">DAW & Beats</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="button" class="btn btn-primary btn-next">CONTINUE TO EXPERIENCE <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Experience -->
+          <div class="form-step" data-step="3">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 3: Current Experience Level</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Help us understand your current musical proficiency.</p>
+
+            <div class="form-group">
+              <label class="form-label">What is your current level?</label>
+              <div class="option-cards-grid">
+                <label class="option-card-radio">
+                  <input type="radio" name="experienceLevel" value="Complete Beginner" checked>
+                  <div class="option-card-content">
+                    <strong>Complete Beginner</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Never played before</span>
+                  </div>
+                </label>
+                <label class="option-card-radio">
+                  <input type="radio" name="experienceLevel" value="Beginner">
+                  <div class="option-card-content">
+                    <strong>Beginner</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Know basic chords/notes</span>
+                  </div>
+                </label>
+                <label class="option-card-radio">
+                  <input type="radio" name="experienceLevel" value="Intermediate">
+                  <div class="option-card-content">
+                    <strong>Intermediate</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Play basic songs fluently</span>
+                  </div>
+                </label>
+                <label class="option-card-radio">
+                  <input type="radio" name="experienceLevel" value="Advanced">
+                  <div class="option-card-content">
+                    <strong>Advanced</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Experienced performer/producer</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <label class="form-label">Have you studied this instrument/program before?</label>
+              <div style="display: flex; gap: 2rem;">
+                <label style="cursor: pointer;"><input type="radio" name="previousExperience" value="Yes"> Yes, with an instructor or self-taught</label>
+                <label style="cursor: pointer;"><input type="radio" name="previousExperience" value="No" checked> No, this is my first time</label>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="button" class="btn btn-primary btn-next">CONTINUE TO FORMAT <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Learning Format -->
+          <div class="form-step" data-step="4">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 4: Learning Format</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Select your preferred instruction mode.</p>
+
+            <div class="option-cards-grid" style="grid-template-columns: 1fr 1fr;">
+              <label class="option-card-radio">
+                <input type="radio" name="learningFormat" value="Online" checked>
+                <div class="option-card-content" style="padding: 2rem;">
+                  <div class="option-card-icon"><i class="fas fa-laptop-house"></i></div>
+                  <strong style="font-size: 1.2rem;">ONLINE CLASS</strong>
+                  <span style="font-size: 0.9rem; color: var(--text-secondary);">One-on-one live video stream from anywhere</span>
+                </div>
+              </label>
+
+              <label class="option-card-radio">
+                <input type="radio" name="learningFormat" value="In-Person">
+                <div class="option-card-content" style="padding: 2rem;">
+                  <div class="option-card-icon"><i class="fas fa-user-friends"></i></div>
+                  <strong style="font-size: 1.2rem;">IN-PERSON CLASS</strong>
+                  <span style="font-size: 0.9rem; color: var(--text-secondary);">Face-to-face studio instruction in Addis Ababa</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="button" class="btn btn-primary btn-next">CONTINUE TO SCHEDULE <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 5: Schedule -->
+          <div class="form-step" data-step="5">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 5: Schedule Preference</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Select your preferred weekly lesson days and times.</p>
+
+            <div class="form-group">
+              <label class="form-label">Preferred Days (Select all that apply) *</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Monday"> Monday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Tuesday"> Tuesday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Wednesday"> Wednesday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Thursday"> Thursday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Friday"> Friday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Saturday" checked> Saturday</label>
+                <label style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input type="checkbox" name="preferredDays" value="Sunday" checked> Sunday</label>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <label class="form-label">Preferred Time Slot *</label>
+              <div class="option-cards-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <label class="option-card-radio">
+                  <input type="radio" name="preferredTime" value="Morning">
+                  <div class="option-card-content">
+                    <strong>Morning</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">8:00 AM - 12:00 PM</span>
+                  </div>
+                </label>
+                <label class="option-card-radio">
+                  <input type="radio" name="preferredTime" value="Afternoon" checked>
+                  <div class="option-card-content">
+                    <strong>Afternoon</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">1:00 PM - 5:00 PM</span>
+                  </div>
+                </label>
+                <label class="option-card-radio">
+                  <input type="radio" name="preferredTime" value="Evening">
+                  <div class="option-card-content">
+                    <strong>Evening</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">5:00 PM - 9:00 PM</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="button" class="btn btn-primary btn-next">CONTINUE TO GOALS <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 6: Goals -->
+          <div class="form-step" data-step="6">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 6: Additional Information & Goals</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Tell us anything else we should know about your learning goals.</p>
+
+            <div class="form-group">
+              <label class="form-label" for="goals">Your Goals / Specific Requests</label>
+              <textarea id="goals" class="form-control" rows="5" placeholder="Example: I want to learn guitar to play worship songs at my church, or I want to record my own original tracks in my home studio."></textarea>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="button" class="btn btn-primary btn-next">REVIEW & CONFIRM <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 7: Terms & Final Confirmation -->
+          <div class="form-step" data-step="7">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 7: Confirm & Complete Registration</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Please review your terms agreement to finish registration.</p>
+
+            <div class="card" style="background: var(--bg-primary); border-color: var(--orange-border); margin-bottom: 1.8rem;">
+              <h4 style="color: var(--bright-orange); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Enrollment Notice</h4>
+              <p style="font-size: 0.9rem;">
+                Submitting this form reserves your registration request. Your official place is confirmed once your payment transfer is verified by our administration.
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label style="display: flex; align-items: flex-start; gap: 0.8rem; cursor: pointer; color: var(--text-white);">
+                <input type="checkbox" id="termsAgreement" required style="margin-top: 4px;">
+                <span>I confirm that the information I provided is accurate and I agree to be contacted via Phone / Telegram regarding my registration. *</span>
+              </label>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn btn-secondary btn-prev"><i class="fas fa-arrow-left"></i> BACK</button>
+              <button type="submit" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                COMPLETE REGISTRATION <i class="fas fa-check-circle"></i>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 1rem;">
+            <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+            <div class="brand-title">CHARIS <span>MUSIC COLLECTIVE</span></div>
+          </a>
+          <p>"LEARN MUSIC. CREATE YOUR SOUND."</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact Support</h4>
+          <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
+          <p><i class="fab fa-telegram-plane text-orange"></i> @IyasuMarkos</p>
+        </div>
+        <div class="footer-links">
+          <h4>Security</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Your information is encrypted & transmitted securely.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Charis Music Collective. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/registration.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Received | Charis Music Collective</title>
+  <meta name="description" content="Registration confirmation and payment instructions for Charis Music Collective music classes.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+        <div class="brand-title">
+          CHARIS
+          <span>MUSIC COLLECTIVE</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="classes.html" class="nav-link">Classes</a>
+        <a href="instruments.html" class="nav-link">Instruments</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="check-status.html" class="nav-link" style="color: var(--primary-orange);"><i class="fas fa-search"></i> Check Status</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary">JOIN A CLASS</a>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 3rem);">
+    <div class="container" style="max-width: 800px;">
+      
+      <!-- Success Confirmation Banner -->
+      <div class="success-banner">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">REGISTRATION RECEIVED!</h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary);">Thank you for registering with Charis Music Collective.</p>
+
+        <div style="margin-top: 1.5rem;">
+          <span style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase;">Your Registration ID</span>
+          <div><span class="reg-id-badge" id="display-reg-id">CMC-2026-00000</span></div>
+        </div>
+
+        <div id="registration-summary-box" style="margin-top: 1.5rem; padding: 1.2rem; background: var(--bg-primary); border-radius: var(--radius-md); text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div><strong>Student Name:</strong> <span id="display-student-name">Loading...</span></div>
+          <div><strong>Selected Class:</strong> <span id="display-class-name">Loading...</span></div>
+          <div><strong>Learning Format:</strong> <span id="display-format">Loading...</span></div>
+          <div><strong>Status:</strong> <span class="badge badge-pending_payment">Pending Payment</span></div>
+        </div>
+      </div>
+
+      <!-- Payment Instructions Box -->
+      <div class="payment-box">
+        <h2 style="color: var(--bright-orange); font-size: 1.6rem; margin-bottom: 0.5rem; text-align: center;">
+          <i class="fas fa-credit-card"></i> NEXT STEP: COMPLETE YOUR PAYMENT
+        </h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+          Please use one of the approved payment options below to complete your registration transfer.
+        </p>
+
+        <div style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 2rem;">
+          
+          <div class="payment-method-item">
+            <span style="color: var(--text-muted);">Payment Amount:</span>
+            <strong style="color: var(--bright-orange); font-size: 1.2rem;" id="pay-amount">3,500 ETB</strong>
+          </div>
+
+          <div class="payment-method-item">
+            <span style="color: var(--text-muted);">Bank Name:</span>
+            <strong style="color: var(--text-white);" id="pay-bank-name">Commercial Bank of Ethiopia (CBE)</strong>
+          </div>
+
+          <div class="payment-method-item">
+            <span style="color: var(--text-muted);">Account Holder Name:</span>
+            <strong style="color: var(--text-white);" id="pay-account-name">Iyasu Markos</strong>
+          </div>
+
+          <div class="payment-method-item">
+            <span style="color: var(--text-muted);">Account Number:</span>
+            <strong style="color: var(--text-white); font-family: monospace; font-size: 1.1rem;" id="pay-account-number">1000123456789</strong>
+          </div>
+
+          <div class="payment-method-item">
+            <span style="color: var(--text-muted);">Telebirr Mobile Payment:</span>
+            <strong style="color: var(--text-white); font-family: monospace; font-size: 1.1rem;" id="pay-telebirr-number">+251 910 070 940</strong>
+          </div>
+
+          <div class="payment-method-item" style="border: none;">
+            <span style="color: var(--text-muted);">Payment Reference:</span>
+            <strong style="color: var(--primary-orange);" id="display-ref-id">CMC-2026-00000</strong>
+          </div>
+        </div>
+
+        <!-- Telegram Action CTA -->
+        <div style="text-align: center; background: rgba(0, 136, 204, 0.12); border: 1px solid rgba(0, 136, 204, 0.4); padding: 1.8rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+          <h3 style="color: #0088cc; font-size: 1.3rem; margin-bottom: 0.5rem;"><i class="fab fa-telegram-plane"></i> SEND PAYMENT RECEIPT ON TELEGRAM</h3>
+          <p style="margin-bottom: 1.2rem; color: var(--text-secondary); font-size: 0.95rem;">
+            After completing your transfer, take a screenshot of your receipt and send it to our official Telegram account: <strong id="pay-telegram-username" style="color: var(--text-white);">@IyasuMarkos</strong>
+          </p>
+          <a href="#" id="telegram-receipt-btn" target="_blank" class="btn btn-primary" style="background: linear-gradient(135deg, #0088cc 0%, #00aaff 100%); color: white; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);">
+            <i class="fab fa-telegram-plane"></i> SEND RECEIPT ON TELEGRAM
+          </a>
+        </div>
+
+        <!-- Optional Direct Storage Upload -->
+        <div style="background: var(--bg-primary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--orange-border);">
+          <h4 style="color: var(--bright-orange); margin-bottom: 0.5rem;"><i class="fas fa-upload"></i> Optional: Directly Upload Receipt File</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">If you prefer, you can also attach your receipt image (JPG, PNG, WEBP, PDF) here for administrator verification.</p>
+          
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <input type="file" id="receipt-file-input" accept="image/*,.pdf" class="form-control" style="padding: 0.5rem;">
+            <button type="button" id="btn-upload-receipt" class="btn btn-secondary btn-sm">Upload Receipt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- What Happens Next Roadmap -->
+      <div class="card" style="border-color: var(--orange-border);">
+        <h3 style="font-size: 1.4rem; color: var(--bright-orange); margin-bottom: 1rem;">WHAT HAPPENS NEXT?</h3>
+        
+        <ol style="padding-left: 1.2rem; line-height: 1.8; color: var(--text-secondary);">
+          <li style="margin-bottom: 0.5rem;">Complete payment via Bank Transfer or Telebirr</li>
+          <li style="margin-bottom: 0.5rem;">Send payment receipt via Telegram to <strong style="color: var(--text-white);">@IyasuMarkos</strong> or upload it above</li>
+          <li style="margin-bottom: 0.5rem;">Our team verifies your payment against transaction records</li>
+          <li style="margin-bottom: 0.5rem;">Your registration is approved and your place is locked in</li>
+          <li style="margin-bottom: 0.5rem;">Instructor Iyasu Markos contacts you with class schedule details</li>
+        </ol>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(235, 87, 87, 0.1); border-left: 4px solid #EB5757; color: var(--text-white); font-size: 0.9rem;">
+          <i class="fas fa-exclamation-circle text-orange"></i> <strong>Important Notice:</strong> Your place in the class is not confirmed until your payment has been verified by the administrator.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 1rem;">
+            <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+            <div class="brand-title">CHARIS <span>MUSIC COLLECTIVE</span></div>
+          </a>
+          <p>"LEARN MUSIC. CREATE YOUR SOUND."</p>
+        </div>
+        <div class="footer-links">
+          <h4>Need Assistance?</h4>
+          <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
+          <p><i class="fab fa-telegram-plane text-orange"></i> @IyasuMarkos</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Charis Music Collective. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/settings.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const regId = urlParams.get('id');
+
+      if (regId) {
+        document.getElementById('display-reg-id').textContent = regId;
+        document.getElementById('display-ref-id').textContent = regId;
+
+        const reg = await window.CMC_API.getRegistrationById(regId);
+        if (reg) {
+          document.getElementById('display-student-name').textContent = reg.fullName;
+          document.getElementById('display-class-name').textContent = reg.programName;
+          document.getElementById('display-format').textContent = reg.learningFormat;
+        }
+      }
+
+      // Receipt Upload Simulator / Handler
+      document.getElementById('btn-upload-receipt')?.addEventListener('click', function() {
+        const fileInput = document.getElementById('receipt-file-input');
+        if (!fileInput.files || fileInput.files.length === 0) {
+          window.showToast('Please select a receipt file first.', 'error');
+          return;
+        }
+
+        window.showToast('Receipt uploaded successfully! Verification in progress.', 'success');
+        if (regId) {
+          window.CMC_API.updateRegistrationStatus(regId, 'payment_review', 'receipt_submitted');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

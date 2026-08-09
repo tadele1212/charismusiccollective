@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Charis Music Collective</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <img src="../assets/images/logo.png" alt="Logo">
+      <h3>CHARIS ADMIN</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="index.html" class="sidebar-link active"><i class="fas fa-chart-line"></i> Dashboard</a>
+      <a href="registrations.html" class="sidebar-link"><i class="fas fa-id-card"></i> Registrations</a>
+      <a href="students.html" class="sidebar-link"><i class="fas fa-user-graduate"></i> Approved Students</a>
+      <a href="programs.html" class="sidebar-link"><i class="fas fa-music"></i> Programs</a>
+      <a href="instruments.html" class="sidebar-link"><i class="fas fa-guitar"></i> Instruments</a>
+      <a href="payments.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment Settings</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-envelope"></i> Messages</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Site Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-page-title">
+        <h2>Dashboard Overview</h2>
+      </div>
+      <div class="admin-user-menu">
+        <span style="font-size: 0.9rem;"><i class="fas fa-user-circle text-orange"></i> Iyasu Markos (Admin)</span>
+        <a href="../index.html" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> View Site</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      
+      <!-- KPI Metric Cards Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-total">
+          <div class="kpi-header">
+            <span>Total Registrations</span>
+            <i class="fas fa-users text-orange"></i>
+          </div>
+          <div class="kpi-value" id="kpi-total">0</div>
+        </div>
+
+        <div class="kpi-card kpi-pending">
+          <div class="kpi-header">
+            <span>Pending Payment</span>
+            <i class="fas fa-clock" style="color: var(--status-pending);"></i>
+          </div>
+          <div class="kpi-value" id="kpi-pending" style="color: var(--status-pending);">0</div>
+        </div>
+
+        <div class="kpi-card kpi-review">
+          <div class="kpi-header">
+            <span>Payment Review</span>
+            <i class="fas fa-search-dollar" style="color: var(--status-review);"></i>
+          </div>
+          <div class="kpi-value" id="kpi-review" style="color: var(--status-review);">0</div>
+        </div>
+
+        <div class="kpi-card kpi-approved">
+          <div class="kpi-header">
+            <span>Approved Students</span>
+            <i class="fas fa-check-circle" style="color: var(--status-approved);"></i>
+          </div>
+          <div class="kpi-value" id="kpi-approved" style="color: var(--status-approved);">0</div>
+        </div>
+
+        <div class="kpi-card kpi-rejected">
+          <div class="kpi-header">
+            <span>Rejected / Cancelled</span>
+            <i class="fas fa-times-circle" style="color: var(--status-rejected);"></i>
+          </div>
+          <div class="kpi-value" id="kpi-rejected" style="color: var(--status-rejected);">0</div>
+        </div>
+      </div>
+
+      <!-- Quick Action Panels -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        
+        <div class="table-wrapper">
+          <div class="table-toolbar">
+            <h3>Recent Registrations</h3>
+            <a href="registrations.html" class="btn btn-secondary btn-sm">View All <i class="fas fa-arrow-right"></i></a>
+          </div>
+
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Phone</th>
+                <th>Program</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="registrations-tbody">
+              <!-- Rendered by js/admin-dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="card" style="border-color: var(--orange-border); margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.2rem; color: var(--bright-orange); margin-bottom: 1rem;"><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+              <a href="registrations.html" class="btn btn-secondary btn-sm btn-block" style="justify-content: flex-start;">
+                <i class="fas fa-check-double text-orange"></i> Verify Pending Payments
+              </a>
+              <a href="payments.html" class="btn btn-secondary btn-sm btn-block" style="justify-content: flex-start;">
+                <i class="fas fa-university text-orange"></i> Update Bank/Telebirr Details
+              </a>
+              <a href="messages.html" class="btn btn-secondary btn-sm btn-block" style="justify-content: flex-start;">
+                <i class="fas fa-inbox text-orange"></i> Read Contact Messages
+              </a>
+            </div>
+          </div>
+
+          <div class="card" style="border-color: var(--border-subtle); background: var(--bg-card);">
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem;"><i class="fab fa-telegram-plane" style="color: #0088cc;"></i> Telegram Receiver</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+              Current telegram receiver handle for payment receipts:
+            </p>
+            <div style="font-weight: 700; color: var(--bright-orange); margin-top: 0.5rem; font-size: 1.1rem;">
+              @IyasuMarkos
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

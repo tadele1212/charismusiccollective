@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instruments | Charis Music Collective</title>
+  <meta name="description" content="Explore instrument courses at Charis Music Collective: Piano, Guitar, Bass. Personalized lessons for worship, studio, and stage.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+        <div class="brand-title">
+          CHARIS
+          <span>MUSIC COLLECTIVE</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="classes.html" class="nav-link">Classes</a>
+        <a href="instruments.html" class="nav-link active">Instruments</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="check-status.html" class="nav-link" style="color: var(--primary-orange);"><i class="fas fa-search"></i> Check Status</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="student-auth.html?mode=signup&redirect=register" class="btn btn-primary">JOIN A CLASS</a>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Banner -->
+  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 4rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary); text-align: center;">
+    <div class="container">
+      <span class="section-label">CHOOSE YOUR INSTRUMENT</span>
+      <h1 class="section-title">INSTRUMENT CATALOG</h1>
+      <p class="section-subtitle" style="margin: 0 auto;">Select your preferred instrument to build strong technique, rhythm, confidence, and musical expression.</p>
+    </div>
+  </section>
+
+  <!-- Instruments Container -->
+  <section class="section-padding bg-secondary-section">
+    <div class="container">
+      <div id="instruments-container" class="grid-3">
+        <!-- Dynamically rendered by js/programs.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 1rem;">
+            <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+            <div class="brand-title">CHARIS <span>MUSIC COLLECTIVE</span></div>
+          </a>
+          <p>"LEARN MUSIC. CREATE YOUR SOUND."</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="instruments.html">Instruments</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Instruments</h4>
+          <ul>
+            <li><a href="student-auth.html?mode=signup&redirect=register&program=Piano">🎹 Piano</a></li>
+            <li><a href="student-auth.html?mode=signup&redirect=register&program=Guitar">🎸 Guitar</a></li>
+            <li><a href="student-auth.html?mode=signup&redirect=register&program=Bass">🎸 Bass</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact</h4>
+          <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
+          <p><i class="fab fa-telegram-plane text-orange"></i> @IyasuMarkos</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Charis Music Collective. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/programs.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

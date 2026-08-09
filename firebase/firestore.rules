@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated admin
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Public Visitor access for Registration creation
+    match /registrations/{registrationId} {
+      allow create: if request.resource.data.registrationId == registrationId;
+      allow read: if isAdmin() || (resource != null && resource.data.registrationId == registrationId);
+      allow update, delete: if isAdmin();
+    }
+
+    // Public Contact Form Messages
+    match /messages/{messageId} {
+      allow create: if request.resource.data.name != null && request.resource.data.email != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Public Programs & Instruments read access
+    match /programs/{programId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /instruments/{instrumentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Site & Payment Settings
+    match /settings/{settingDoc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admin User Profile Docs
+    match /adminUsers/{userId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Account | Charis Music Collective</title>
+  <meta name="description" content="Sign in or create a student account at Charis Music Collective to track your class registration and payment status.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+        <div class="brand-title">
+          CHARIS
+          <span>MUSIC COLLECTIVE</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="classes.html" class="nav-link">Classes</a>
+        <a href="instruments.html" class="nav-link">Instruments</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="check-status.html" class="nav-link" style="color: var(--primary-orange);"><i class="fas fa-search"></i> Check Status</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="register.html" class="btn btn-primary">JOIN A CLASS</a>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 3rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary); text-align: center;">
+    <div class="container">
+      <span class="section-label">STUDENT PORTAL</span>
+      <h1 class="section-title">WELCOME TO CHARIS</h1>
+      <p class="section-subtitle" style="margin: 0 auto;">Sign in to your student account or register a new account to complete registration and track your status.</p>
+    </div>
+  </section>
+
+  <!-- Auth Form Container -->
+  <section class="section-padding bg-secondary-section">
+    <div class="container">
+      <div class="auth-container">
+        
+        <div id="auth-notice-banner" style="display: none; margin-bottom: 1.5rem; padding: 0.8rem 1rem; background: rgba(244,123,32,0.15); border: 1px solid var(--orange-border); border-radius: var(--radius-sm); color: var(--bright-orange); font-size: 0.88rem; text-align: center; font-weight: 600;"></div>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+          <div class="auth-tab active" data-target="signin-panel">SIGN IN</div>
+          <div class="auth-tab" data-target="signup-panel">CREATE ACCOUNT</div>
+        </div>
+
+        <!-- Google Auth Button (Shared) -->
+        <button type="button" class="btn-google">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="auth-divider">OR WITH EMAIL</div>
+
+        <!-- PANEL 1: Sign In Form -->
+        <div id="signin-panel" class="auth-form-panel">
+          <form id="signin-form">
+            <div class="form-group">
+              <label class="form-label" for="login-email">Email Address</label>
+              <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label class="form-label" for="login-password" style="margin-bottom: 0;">Password</label>
+                <a href="#" id="forgot-password-link" style="font-size: 0.8rem; color: var(--primary-orange);">Forgot Password?</a>
+              </div>
+              <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+              SIGN IN <i class="fas fa-sign-in-alt"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- PANEL 2: Create Account Form -->
+        <div id="signup-panel" class="auth-form-panel" style="display: none;">
+          <form id="signup-form">
+            <div class="form-group">
+              <label class="form-label" for="reg-fullname">Full Name *</label>
+              <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Kebede Alemu" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-email">Email Address *</label>
+              <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Password (min 8 characters) *</label>
+              <input type="password" id="reg-password" class="form-control" placeholder="Create a strong password" required minlength="8">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm-password">Re-enter Password *</label>
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="Re-enter your password" required minlength="8">
+              <div id="password-match-status" class="password-match-status"></div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.2rem;">
+              <label style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="reg-terms" required style="margin-top: 3px;">
+                <span>I agree to Charis Music Collective Terms of Service and Privacy Policy. *</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+              CREATE ACCOUNT <i class="fas fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 1rem;">
+            <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+            <div class="brand-title">CHARIS <span>MUSIC COLLECTIVE</span></div>
+          </a>
+          <p>"LEARN MUSIC. CREATE YOUR SOUND."</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="register.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact Support</h4>
+          <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Charis Music Collective. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth-student.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Settings | Admin | Charis Music Collective</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <img src="../assets/images/logo.png" alt="Logo">
+      <h3>CHARIS ADMIN</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="index.html" class="sidebar-link"><i class="fas fa-chart-line"></i> Dashboard</a>
+      <a href="registrations.html" class="sidebar-link"><i class="fas fa-id-card"></i> Registrations</a>
+      <a href="students.html" class="sidebar-link"><i class="fas fa-user-graduate"></i> Approved Students</a>
+      <a href="programs.html" class="sidebar-link"><i class="fas fa-music"></i> Programs</a>
+      <a href="instruments.html" class="sidebar-link"><i class="fas fa-guitar"></i> Instruments</a>
+      <a href="payments.html" class="sidebar-link active"><i class="fas fa-credit-card"></i> Payment Settings</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-envelope"></i> Messages</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Site Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-page-title">
+        <h2>Manage Payment & Telegram Receipt Settings</h2>
+      </div>
+      <div class="admin-user-menu">
+        <a href="../index.html" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> View Site</a>
+      </div>
+    </header>
+
+    <div class="admin-content" style="max-width: 800px;">
+      
+      <div class="card" style="border-color: var(--orange-border); padding: 2.5rem;">
+        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);"><i class="fas fa-university"></i> Bank & Telebirr Transfer Setup</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+          These payment details are dynamically loaded onto the student registration confirmation page. Changes take effect immediately.
+        </p>
+
+        <form id="payment-settings-form">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bankName">Bank Name *</label>
+              <input type="text" id="bankName" class="form-control" placeholder="Commercial Bank of Ethiopia" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="accountName">Account Holder Name *</label>
+              <input type="text" id="accountName" class="form-control" placeholder="Iyasu Markos" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="accountNumber">Bank Account Number *</label>
+              <input type="text" id="accountNumber" class="form-control" placeholder="1000123456789" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="telebirrNumber">Telebirr Mobile Payment Number *</label>
+              <input type="text" id="telebirrNumber" class="form-control" placeholder="+251 910 070 940" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="paymentAmount">Standard Course Fee *</label>
+              <input type="number" id="paymentAmount" class="form-control" placeholder="3500" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="currency">Currency *</label>
+              <input type="text" id="currency" class="form-control" placeholder="ETB" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(0,136,204,0.1); border: 1px solid rgba(0,136,204,0.3); border-radius: var(--radius-sm);">
+            <label class="form-label" for="telegramReceiptUsername" style="color: #0088cc;"><i class="fab fa-telegram-plane"></i> Telegram Receipt Receiver Handle *</label>
+            <input type="text" id="telegramReceiptUsername" class="form-control" placeholder="IyasuMarkos" required>
+            <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 0.4rem;">
+              The "SEND RECEIPT ON TELEGRAM" button will open a direct chat to <code>t.me/@yourhandle</code>.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="paymentInstructions">Custom Payment Instructions Notice</label>
+            <textarea id="paymentInstructions" class="form-control" rows="3" placeholder="Please include your Registration ID as the memo/reference..."></textarea>
+          </div>
+
+          <div style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">
+              SAVE PAYMENT SETTINGS <i class="fas fa-save"></i>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

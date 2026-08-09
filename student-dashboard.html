@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal | Charis Music Collective</title>
+  <meta name="description" content="Manage your music class registrations, track payment verification status, and contact your instructor.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+        <div class="brand-title">
+          CHARIS
+          <span>MUSIC COLLECTIVE</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="classes.html" class="nav-link">Classes</a>
+        <a href="instruments.html" class="nav-link">Instruments</a>
+        <a href="how-it-works.html" class="nav-link">How It Works</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="check-status.html" class="nav-link" style="color: var(--primary-orange);"><i class="fas fa-search"></i> Check Status</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="student-logout-btn" class="btn btn-secondary btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 3rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <span class="section-label"><i class="fas fa-user-graduate"></i> STUDENT PORTAL</span>
+          <h1 class="section-title" style="margin-bottom: 0.4rem;">WELCOME, <span id="student-display-name">STUDENT</span></h1>
+          <p id="student-display-email" style="color: var(--primary-orange); font-weight: 600;">student@example.com</p>
+        </div>
+        <div>
+          <a href="register.html" class="btn btn-primary"><i class="fas fa-plus-circle"></i> JOIN NEW CLASS</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Main Content -->
+  <section class="section-padding bg-secondary-section">
+    <div class="container" style="max-width: 900px;">
+      
+      <!-- Email Verification Warning Banner (If unverified) -->
+      <div id="email-verification-banner" style="display: none;"></div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.6rem;"><i class="fas fa-list-alt text-orange"></i> Your Class Registrations</h2>
+        <a href="check-status.html" style="font-size: 0.88rem; color: var(--text-muted);"><i class="fas fa-search"></i> Public Quick Lookup</a>
+      </div>
+
+      <!-- Registrations Container -->
+      <div id="student-registrations-container">
+        <!-- Dynamically rendered by js/student-portal.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 1rem;">
+            <img src="assets/images/logo.png" alt="Charis Music Collective Logo">
+            <div class="brand-title">CHARIS <span>MUSIC COLLECTIVE</span></div>
+          </a>
+          <p>"LEARN MUSIC. CREATE YOUR SOUND."</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="classes.html">Classes</a></li>
+            <li><a href="register.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Need Assistance?</h4>
+          <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
+          <p><i class="fab fa-telegram-plane text-orange"></i> @IyasuMarkos</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Charis Music Collective. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/student-portal.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>
