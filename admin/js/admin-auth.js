@@ -6,6 +6,12 @@ const ADMIN_SESSION_KEY = 'cmc_admin_auth_active';
 
 document.addEventListener('DOMContentLoaded', function() {
   const path = window.location.pathname.toLowerCase();
+  
+  if (path === '/admin' || path === '/admin/') {
+    window.location.href = '/admin/index.html';
+    return;
+  }
+
   const isLoginPage = path.endsWith('/login') || path.endsWith('/login/') || path.includes('login.html');
 
   if (!isLoginPage) {
@@ -14,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // If user is already logged in, redirect straight to admin dashboard
     const session = localStorage.getItem(ADMIN_SESSION_KEY);
     if (session) {
-      window.location.href = 'index.html';
+      window.location.href = '/admin/index.html';
       return;
     }
     initLoginForm();
@@ -24,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function checkAdminAuth() {
   const session = localStorage.getItem(ADMIN_SESSION_KEY);
   if (!session) {
-    window.location.href = 'login.html';
+    window.location.href = '/admin/login.html';
   }
 }
 
@@ -52,13 +58,13 @@ function initLoginForm() {
 
       window.showToast('Login successful!', 'success');
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = '/admin/index.html';
       }, 800);
     } else if (window.CMC_API.isFirebaseActive()) {
       try {
         await firebase.auth().signInWithEmailAndPassword(email, password);
         localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ email: email, role: 'firebase_admin' }));
-        window.location.href = 'index.html';
+        window.location.href = '/admin/index.html';
       } catch (err) {
         window.showToast('Invalid Firebase admin credentials.', 'error');
         btn.disabled = false;
@@ -77,5 +83,5 @@ window.adminLogout = function() {
   if (typeof firebase !== 'undefined' && firebase.auth) {
     firebase.auth().signOut().catch(() => {});
   }
-  window.location.href = 'login.html';
+  window.location.href = '/admin/login.html';
 };
