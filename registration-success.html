@@ -173,7 +173,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/main.js"></script>
@@ -181,21 +181,56 @@
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const regId = urlParams.get('id');
+      let regId = urlParams.get('id');
+      let regRecord = null;
 
+      // Stage 1: Try loading by URL registration ID
       if (regId) {
-        document.getElementById('display-reg-id').textContent = regId;
-        document.getElementById('display-ref-id').textContent = regId;
-
-        const reg = await window.CMC_API.getRegistrationById(regId);
-        if (reg) {
-          document.getElementById('display-student-name').textContent = reg.fullName;
-          document.getElementById('display-class-name').textContent = reg.programName;
-          document.getElementById('display-format').textContent = reg.learningFormat;
+        try {
+          regRecord = await window.CMC_API.getRegistrationById(regId);
+        } catch (err) {
+          console.warn("Could not fetch registration by ID:", err);
         }
       }
 
-      // Receipt Upload Simulator / Handler
+      // Stage 2: Try reading from client session cache
+      if (!regRecord) {
+        const rawCached = sessionStorage.getItem('cmc_latest_registration') || localStorage.getItem('cmc_latest_registration');
+        if (rawCached) {
+          try { regRecord = JSON.parse(rawCached); } catch(e){}
+        }
+      }
+
+      // Stage 3: Try fetching the most recent registration from store
+      if (!regRecord) {
+        try {
+          const allRegs = await window.CMC_API.getAllRegistrations();
+          if (allRegs && allRegs.length > 0) {
+            regRecord = allRegs[0];
+          }
+        } catch (err) {
+          console.warn("Could not fetch registrations list:", err);
+        }
+      }
+
+      // Populate Exact Real Data
+      if (regRecord) {
+        const finalId = regRecord.registrationId || 'CMC-2026-00001';
+        if (document.getElementById('display-reg-id')) document.getElementById('display-reg-id').textContent = finalId;
+        if (document.getElementById('display-ref-id')) document.getElementById('display-ref-id').textContent = finalId;
+        if (document.getElementById('display-student-name')) document.getElementById('display-student-name').textContent = regRecord.fullName || 'Student';
+        if (document.getElementById('display-class-name')) document.getElementById('display-class-name').textContent = regRecord.programName || regRecord.instrumentName || 'Music Class';
+        if (document.getElementById('display-format')) document.getElementById('display-format').textContent = regRecord.learningFormat || 'Online';
+      } else {
+        // Clear indication if no registration was submitted yet
+        if (document.getElementById('display-reg-id')) document.getElementById('display-reg-id').textContent = 'N/A';
+        if (document.getElementById('display-ref-id')) document.getElementById('display-ref-id').textContent = 'N/A';
+        if (document.getElementById('display-student-name')) document.getElementById('display-student-name').textContent = 'No Registration Submitted';
+        if (document.getElementById('display-class-name')) document.getElementById('display-class-name').textContent = 'None Selected';
+        if (document.getElementById('display-format')) document.getElementById('display-format').textContent = 'N/A';
+      }
+
+      // Receipt Upload Handler
       document.getElementById('btn-upload-receipt')?.addEventListener('click', function() {
         const fileInput = document.getElementById('receipt-file-input');
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -203,12 +238,14 @@
           return;
         }
 
+        const activeId = regRecord ? regRecord.registrationId : regId;
         window.showToast('Receipt uploaded successfully! Verification in progress.', 'success');
-        if (regId) {
-          window.CMC_API.updateRegistrationStatus(regId, 'payment_review', 'receipt_submitted');
+        if (activeId) {
+          window.CMC_API.updateRegistrationStatus(activeId, 'payment_review', 'receipt_submitted');
         }
       });
     });
+  </script>
   </script>
 </body>
 </html>

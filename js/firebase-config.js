@@ -6,6 +6,7 @@
 let firebaseConfig = {
   apiKey: "AIzaSyBdB-X40cZBIbgwH_rWS27NAnZ8jGe8gVg",
   authDomain: "charismusiccollective.firebaseapp.com",
+  databaseURL: "https://charismusiccollective-default-rtdb.firebaseio.com",
   projectId: "charismusiccollective",
   storageBucket: "charismusiccollective.firebasestorage.app",
   messagingSenderId: "624025410838",
@@ -159,11 +160,14 @@ window.CMC_API = {
   createRegistration: async function(regData) {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        await db.collection('registrations').doc(regData.registrationId).set(regData);
+        const db = firebase.database();
+        await Promise.race([
+          db.ref('registrations/' + regData.registrationId).set(regData),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB sync timeout")), 3500))
+        ]);
         return { success: true, data: regData };
       } catch (err) {
-        console.error("Firebase Storage Error:", err);
+        console.warn("Firebase Realtime DB Error, falling back to LocalStorage:", err.message);
       }
     }
     // LocalStorage Fallback
@@ -177,11 +181,14 @@ window.CMC_API = {
   getRegistrationById: async function(regId) {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        const doc = await db.collection('registrations').doc(regId).get();
-        if (doc.exists) return doc.data();
+        const db = firebase.database();
+        const snap = await Promise.race([
+          db.ref('registrations/' + regId).once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB get timeout")), 3000))
+        ]);
+        if (snap && snap.exists()) return snap.val();
       } catch (err) {
-        console.error("Firebase get error:", err);
+        console.warn("Firebase Realtime DB get error, falling back to LocalStorage:", err.message);
       }
     }
     const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
@@ -205,11 +212,18 @@ window.CMC_API = {
   getAllRegistrations: async function() {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        const snapshot = await db.collection('registrations').orderBy('createdAt', 'desc').get();
-        return snapshot.docs.map(doc => doc.data());
+        const db = firebase.database();
+        const snap = await Promise.race([
+          db.ref('registrations').once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB list timeout")), 3000))
+        ]);
+        if (snap && snap.exists()) {
+          const val = snap.val();
+          const list = Object.keys(val).map(k => val[k]);
+          return list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        }
       } catch (err) {
-        console.error("Firebase list error:", err);
+        console.warn("Firebase Realtime DB list error, falling back to LocalStorage:", err.message);
       }
     }
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
@@ -219,15 +233,18 @@ window.CMC_API = {
   updateRegistrationStatus: async function(regId, regStatus, payStatus) {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        await db.collection('registrations').doc(regId).update({
-          registrationStatus: regStatus,
-          paymentStatus: payStatus,
-          updatedAt: new Date().toISOString()
-        });
+        const db = firebase.database();
+        await Promise.race([
+          db.ref('registrations/' + regId).update({
+            registrationStatus: regStatus,
+            paymentStatus: payStatus,
+            updatedAt: new Date().toISOString()
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB update timeout")), 3500))
+        ]);
         return true;
       } catch (err) {
-        console.error("Firebase update error:", err);
+        console.warn("Firebase Realtime DB update error, falling back to LocalStorage:", err.message);
       }
     }
     const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
@@ -246,14 +263,17 @@ window.CMC_API = {
   getSettings: async function() {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        const doc = await db.collection('settings').doc('general').get();
-        const payDoc = await db.collection('settings').doc('payment').get();
-        if (doc.exists) {
-          return { general: doc.data(), payment: payDoc.exists ? payDoc.data() : {} };
+        const db = firebase.database();
+        const snap = await Promise.race([
+          db.ref('settings').once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB settings timeout")), 3000))
+        ]);
+        if (snap && snap.exists()) {
+          const data = snap.val();
+          return { general: data.general || {}, payment: data.payment || {} };
         }
       } catch (err) {
-        console.error("Firebase settings error:", err);
+        console.warn("Firebase Realtime DB settings error, falling back to LocalStorage:", err.message);
       }
     }
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS));
@@ -263,12 +283,14 @@ window.CMC_API = {
   saveSettings: async function(settingsData) {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        await db.collection('settings').doc('general').set(settingsData.general, { merge: true });
-        await db.collection('settings').doc('payment').set(settingsData.payment, { merge: true });
+        const db = firebase.database();
+        await Promise.race([
+          db.ref('settings').set(settingsData),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB settings save timeout")), 3500))
+        ]);
         return true;
       } catch (err) {
-        console.error("Firebase save settings error:", err);
+        console.warn("Firebase Realtime DB save settings error:", err.message);
       }
     }
     localStorage.setItem(MOCK_STORAGE_KEY_SETTINGS, JSON.stringify(settingsData));
@@ -283,11 +305,14 @@ window.CMC_API = {
 
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        await db.collection('messages').doc(msgData.id).set(msgData);
+        const db = firebase.database();
+        await Promise.race([
+          db.ref('messages/' + msgData.id).set(msgData),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB message timeout")), 3500))
+        ]);
         return true;
       } catch (err) {
-        console.error("Firebase message save error:", err);
+        console.warn("Firebase Realtime DB message save error:", err.message);
       }
     }
     const msgs = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_MESSAGES) || '[]');
@@ -300,11 +325,18 @@ window.CMC_API = {
   getMessages: async function() {
     if (this.isFirebaseActive()) {
       try {
-        const db = firebase.firestore();
-        const snap = await db.collection('messages').orderBy('createdAt', 'desc').get();
-        return snap.docs.map(d => d.data());
+        const db = firebase.database();
+        const snap = await Promise.race([
+          db.ref('messages').once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB messages timeout")), 3000))
+        ]);
+        if (snap && snap.exists()) {
+          const val = snap.val();
+          const list = Object.keys(val).map(k => val[k]);
+          return list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        }
       } catch (err) {
-        console.error(err);
+        console.warn("Firebase RTDB list error:", err.message);
       }
     }
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_MESSAGES) || '[]');
@@ -328,12 +360,20 @@ window.CMC_API = {
     if (this.isFirebaseActive()) {
       try {
         const authRes = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        await authRes.user.updateProfile({ displayName: fullName });
-        await authRes.user.sendEmailVerification();
+        await authRes.user.updateProfile({ displayName: fullName }).catch(() => {});
+        await authRes.user.sendEmailVerification().catch(() => {});
         studentUser.uid = authRes.user.uid;
 
-        const db = firebase.firestore();
-        await db.collection('users').doc(studentUser.uid).set(studentUser);
+        // Try RTDB user sync with timeout; don't block account creation if RTDB is not created yet
+        try {
+          const db = firebase.database();
+          await Promise.race([
+            db.ref('users/' + studentUser.uid).set(studentUser),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB user sync timeout")), 3000))
+          ]);
+        } catch (dbErr) {
+          console.warn("RTDB user profile sync warning (non-fatal):", dbErr.message);
+        }
 
         localStorage.setItem(this.MOCK_STORAGE_KEY_STUDENT_SESSION, JSON.stringify(studentUser));
         return { success: true, user: studentUser };
@@ -412,6 +452,9 @@ window.CMC_API = {
         return { success: true, user: userObj };
       } catch (err) {
         console.error("Google Auth error:", err);
+        if (err.code === 'auth/popup-closed-by-user') {
+          return { success: false, error: 'Google sign-in popup was closed before completing.' };
+        }
         return { success: false, error: err.message };
       }
     }

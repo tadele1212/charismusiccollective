@@ -217,6 +217,10 @@ document.addEventListener('DOMContentLoaded', function() {
         updatedAt: new Date().toISOString()
       };
 
+      // Save payload locally for instant display on success page
+      sessionStorage.setItem('cmc_latest_registration', JSON.stringify(regPayload));
+      localStorage.setItem('cmc_latest_registration', JSON.stringify(regPayload));
+
       // Submit via API adapter
       const res = await window.CMC_API.createRegistration(regPayload);
 

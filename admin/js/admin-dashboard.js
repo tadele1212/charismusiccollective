@@ -387,6 +387,7 @@ async function loadAdminFirebaseSettings() {
   if (document.getElementById('fb-apiKey')) document.getElementById('fb-apiKey').value = currentCfg.apiKey || '';
   if (document.getElementById('fb-projectId')) document.getElementById('fb-projectId').value = currentCfg.projectId || '';
   if (document.getElementById('fb-authDomain')) document.getElementById('fb-authDomain').value = currentCfg.authDomain || '';
+  if (document.getElementById('fb-databaseURL')) document.getElementById('fb-databaseURL').value = currentCfg.databaseURL || '';
   if (document.getElementById('fb-storageBucket')) document.getElementById('fb-storageBucket').value = currentCfg.storageBucket || '';
   if (document.getElementById('fb-messagingSenderId')) document.getElementById('fb-messagingSenderId').value = currentCfg.messagingSenderId || '';
   if (document.getElementById('fb-appId')) document.getElementById('fb-appId').value = currentCfg.appId || '';
@@ -397,9 +398,10 @@ async function loadAdminFirebaseSettings() {
       apiKey: document.getElementById('fb-apiKey').value.trim(),
       projectId: document.getElementById('fb-projectId').value.trim(),
       authDomain: document.getElementById('fb-authDomain').value.trim() || `${document.getElementById('fb-projectId').value.trim()}.firebaseapp.com`,
-      storageBucket: document.getElementById('fb-storageBucket').value.trim() || `${document.getElementById('fb-projectId').value.trim()}.appspot.com`,
-      messagingSenderId: document.getElementById('fb-messagingSenderId').value.trim(),
-      appId: document.getElementById('fb-appId').value.trim()
+      databaseURL: document.getElementById('fb-databaseURL')?.value.trim() || `https://${document.getElementById('fb-projectId').value.trim()}-default-rtdb.firebaseio.com`,
+      storageBucket: document.getElementById('fb-storageBucket')?.value.trim() || `${document.getElementById('fb-projectId').value.trim()}.appspot.com`,
+      messagingSenderId: document.getElementById('fb-messagingSenderId')?.value.trim(),
+      appId: document.getElementById('fb-appId')?.value.trim()
     };
 
     localStorage.setItem('cmc_custom_firebase_config', JSON.stringify(newConfig));
