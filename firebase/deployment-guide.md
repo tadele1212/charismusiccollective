@@ -21,12 +21,13 @@ Open `js/firebase-config.js` and replace the placeholder keys with your actual F
 
 ```javascript
 const firebaseConfig = {
-  apiKey: "AIzaSyYourActualKeyHere...",
-  authDomain: "charis-music-collective.firebaseapp.com",
-  projectId: "charis-music-collective",
-  storageBucket: "charis-music-collective.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890"
+  apiKey: "AIzaSyBdB-X40cZBIbgwH_rWS27NAnZ8jGe8gVg",
+  authDomain: "charismusiccollective.firebaseapp.com",
+  projectId: "charismusiccollective",
+  storageBucket: "charismusiccollective.firebasestorage.app",
+  messagingSenderId: "624025410838",
+  appId: "1:624025410838:web:d46b3b403df084c1f7c437",
+  measurementId: "G-1VVJHVX54W"
 };
 ```
 

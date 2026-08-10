@@ -94,9 +94,72 @@
         </form>
       </div>
 
+      <!-- Firebase Integration Settings Card -->
+      <div class="admin-card" style="margin-top: 2rem;">
+        <div class="admin-card-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-heading); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-fire text-orange"></i> Firebase Cloud Integration Settings
+          </h2>
+          <span id="firebase-status-badge" class="status-badge" style="background: rgba(255, 107, 0, 0.1); color: var(--accent-orange); border: 1px solid rgba(255, 107, 0, 0.3);">
+            Checking...
+          </span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+          Configure your web credentials from the <a href="https://console.firebase.google.com/" target="_blank" style="color: var(--accent-orange); text-decoration: underline;">Firebase Console</a>. When valid credentials are saved, registration records, student users, and site configuration will automatically store in Cloud Firestore and Firebase Auth instead of local storage.
+        </p>
+
+        <form id="firebase-settings-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="fb-apiKey">API Key (apiKey)</label>
+              <input type="text" id="fb-apiKey" class="form-control" placeholder="AIzaSy..." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-projectId">Project ID (projectId)</label>
+              <input type="text" id="fb-projectId" class="form-control" placeholder="charis-music-collective" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="fb-authDomain">Auth Domain (authDomain)</label>
+              <input type="text" id="fb-authDomain" class="form-control" placeholder="charis-music-collective.firebaseapp.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-storageBucket">Storage Bucket (storageBucket)</label>
+              <input type="text" id="fb-storageBucket" class="form-control" placeholder="charis-music-collective.appspot.com">
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="fb-messagingSenderId">Messaging Sender ID</label>
+              <input type="text" id="fb-messagingSenderId" class="form-control" placeholder="123456789012">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-appId">App ID (appId)</label>
+              <input type="text" id="fb-appId" class="form-control" placeholder="1:123456789012:web:abcdef1234567890">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.9rem;">
+              <i class="fas fa-plug"></i> Save & Connect Firebase
+            </button>
+            <button type="button" id="btn-reset-firebase" class="btn btn-outline" style="padding: 0.9rem;">
+              <i class="fas fa-undo"></i> Reset to Local Storage
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
   </main>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="../js/firebase-config.js"></script>
   <script src="../js/main.js"></script>
   <script src="js/admin-auth.js"></script>

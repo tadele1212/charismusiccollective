@@ -36,6 +36,11 @@ async function initAdminDashboard() {
     await loadAdminGeneralSettings();
   }
 
+  // Load Firebase settings if on settings.html
+  if (document.getElementById('firebase-settings-form')) {
+    await loadAdminFirebaseSettings();
+  }
+
   // Load messages if on messages.html
   if (document.getElementById('messages-container')) {
     await renderAdminMessages();
@@ -350,6 +355,70 @@ async function loadAdminGeneralSettings() {
     await window.CMC_API.saveSettings(settings);
     window.showToast('Website settings updated successfully!', 'success');
   });
+}
+
+// Admin Firebase Integration Settings Manager
+async function loadAdminFirebaseSettings() {
+  const form = document.getElementById('firebase-settings-form');
+  if (!form) return;
+
+  const badge = document.getElementById('firebase-status-badge');
+  if (badge) {
+    if (window.CMC_API.isFirebaseActive()) {
+      badge.style.background = 'rgba(16, 185, 129, 0.15)';
+      badge.style.color = '#10b981';
+      badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+      badge.innerHTML = `<i class="fas fa-check-circle"></i> Firebase Cloud Connected`;
+    } else {
+      badge.style.background = 'rgba(255, 107, 0, 0.15)';
+      badge.style.color = 'var(--accent-orange)';
+      badge.style.borderColor = 'rgba(255, 107, 0, 0.3)';
+      badge.innerHTML = `<i class="fas fa-database"></i> LocalStorage Fallback Active`;
+    }
+  }
+
+  // Load stored dynamic config if available
+  const saved = localStorage.getItem('cmc_custom_firebase_config');
+  let currentCfg = {};
+  if (saved) {
+    try { currentCfg = JSON.parse(saved); } catch(e){}
+  }
+
+  if (document.getElementById('fb-apiKey')) document.getElementById('fb-apiKey').value = currentCfg.apiKey || '';
+  if (document.getElementById('fb-projectId')) document.getElementById('fb-projectId').value = currentCfg.projectId || '';
+  if (document.getElementById('fb-authDomain')) document.getElementById('fb-authDomain').value = currentCfg.authDomain || '';
+  if (document.getElementById('fb-storageBucket')) document.getElementById('fb-storageBucket').value = currentCfg.storageBucket || '';
+  if (document.getElementById('fb-messagingSenderId')) document.getElementById('fb-messagingSenderId').value = currentCfg.messagingSenderId || '';
+  if (document.getElementById('fb-appId')) document.getElementById('fb-appId').value = currentCfg.appId || '';
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const newConfig = {
+      apiKey: document.getElementById('fb-apiKey').value.trim(),
+      projectId: document.getElementById('fb-projectId').value.trim(),
+      authDomain: document.getElementById('fb-authDomain').value.trim() || `${document.getElementById('fb-projectId').value.trim()}.firebaseapp.com`,
+      storageBucket: document.getElementById('fb-storageBucket').value.trim() || `${document.getElementById('fb-projectId').value.trim()}.appspot.com`,
+      messagingSenderId: document.getElementById('fb-messagingSenderId').value.trim(),
+      appId: document.getElementById('fb-appId').value.trim()
+    };
+
+    localStorage.setItem('cmc_custom_firebase_config', JSON.stringify(newConfig));
+    window.showToast('Firebase credentials saved successfully! Reloading page...', 'success');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1200);
+  });
+
+  const resetBtn = document.getElementById('btn-reset-firebase');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      localStorage.removeItem('cmc_custom_firebase_config');
+      window.showToast('Reset Firebase config to default LocalStorage mode. Reloading...', 'info');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    });
+  }
 }
 
 // Render Messages Inbox

@@ -2,15 +2,45 @@
    CHARIS MUSIC COLLECTIVE - Firebase Configuration & Storage/Mock Adapter
    ========================================================================== */
 
-// Default configuration template (Replace with your actual Firebase Console keys)
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "charis-music-collective.firebaseapp.com",
-  projectId: "charis-music-collective",
-  storageBucket: "charis-music-collective.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890"
+// Live Firebase project configuration
+let firebaseConfig = {
+  apiKey: "AIzaSyBdB-X40cZBIbgwH_rWS27NAnZ8jGe8gVg",
+  authDomain: "charismusiccollective.firebaseapp.com",
+  projectId: "charismusiccollective",
+  storageBucket: "charismusiccollective.firebasestorage.app",
+  messagingSenderId: "624025410838",
+  appId: "1:624025410838:web:d46b3b403df084c1f7c437",
+  measurementId: "G-1VVJHVX54W"
 };
+
+// Check for dynamic Firebase config stored in localStorage (set via Admin Settings UI)
+const savedConfig = localStorage.getItem('cmc_custom_firebase_config');
+if (savedConfig) {
+  try {
+    const parsed = JSON.parse(savedConfig);
+    if (parsed && parsed.apiKey && parsed.apiKey !== "YOUR_FIREBASE_API_KEY") {
+      firebaseConfig = { ...firebaseConfig, ...parsed };
+    }
+  } catch (e) {
+    console.error("Error parsing saved Firebase config:", e);
+  }
+}
+
+// Auto-initialize Firebase App if SDK is present and valid key is provided
+let isFirebaseInitialized = false;
+if (typeof firebase !== 'undefined') {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY") {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      isFirebaseInitialized = true;
+      console.log("🔥 Firebase initialized successfully for project:", firebaseConfig.projectId);
+    } catch (e) {
+      console.warn("🔥 Firebase initialization warning:", e.message);
+    }
+  }
+}
 
 // Global Store State for Local Fallback Engine
 const MOCK_STORAGE_KEY_REGISTRATIONS = 'cmc_mock_registrations';
@@ -120,9 +150,9 @@ initMockSettings();
 
 // Unified Data Adapter Wrapper Functions
 window.CMC_API = {
-  // Check if Firebase keys are real
+  // Check if Firebase is initialized and active
   isFirebaseActive: function() {
-    return typeof firebase !== 'undefined' && firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY";
+    return typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0;
   },
 
   // Save Registration Document

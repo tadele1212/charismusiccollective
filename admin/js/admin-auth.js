@@ -5,11 +5,18 @@
 const ADMIN_SESSION_KEY = 'cmc_admin_auth_active';
 
 document.addEventListener('DOMContentLoaded', function() {
-  const isLoginPage = window.location.pathname.includes('login.html');
+  const path = window.location.pathname.toLowerCase();
+  const isLoginPage = path.endsWith('/login') || path.endsWith('/login/') || path.includes('login.html');
 
   if (!isLoginPage) {
     checkAdminAuth();
   } else {
+    // If user is already logged in, redirect straight to admin dashboard
+    const session = localStorage.getItem(ADMIN_SESSION_KEY);
+    if (session) {
+      window.location.href = 'index.html';
+      return;
+    }
     initLoginForm();
   }
 });
