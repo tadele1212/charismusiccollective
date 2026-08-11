@@ -4,14 +4,14 @@
 
 // Live Firebase project configuration
 let firebaseConfig = {
-  apiKey: "AIzaSyBdB-X40cZBIbgwH_rWS27NAnZ8jGe8gVg",
-  authDomain: "charismusiccollective.firebaseapp.com",
-  databaseURL: "https://charismusiccollective-default-rtdb.firebaseio.com",
-  projectId: "charismusiccollective",
-  storageBucket: "charismusiccollective.firebasestorage.app",
-  messagingSenderId: "624025410838",
-  appId: "1:624025410838:web:d46b3b403df084c1f7c437",
-  measurementId: "G-1VVJHVX54W"
+  apiKey: "AIzaSyAd_lgNLLeaIfCFadyIt1LZZ42rU7DEn_w",
+  authDomain: "charis-music-collective.firebaseapp.com",
+  databaseURL: "https://charis-music-collective-default-rtdb.firebaseio.com",
+  projectId: "charis-music-collective",
+  storageBucket: "charis-music-collective.firebasestorage.app",
+  messagingSenderId: "910442600269",
+  appId: "1:910442600269:web:712694d4865f99eaeb8904",
+  measurementId: "G-VX7ZGS1GZQ"
 };
 
 // Check for dynamic Firebase config stored in localStorage (set via Admin Settings UI)
@@ -97,52 +97,7 @@ function initMockSettings() {
   }
 
   if (!localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS)) {
-    // Demo registrations for initial view
-    const demoRegs = [
-      {
-        registrationId: "CMC-2026-00001",
-        fullName: "Abebe Kebede",
-        phone: "+251911223344",
-        email: "abebe@example.com",
-        telegramUsername: "@abebe_k",
-        age: 24,
-        city: "Addis Ababa",
-        country: "Ethiopia",
-        instrumentName: "Guitar",
-        programName: "Guitar",
-        experienceLevel: "Beginner",
-        previousExperience: "No",
-        learningFormat: "In-Person",
-        preferredDays: ["Saturday", "Sunday"],
-        preferredTime: "Afternoon",
-        goals: "Learn acoustic guitar for worship team at church.",
-        paymentStatus: "pending",
-        registrationStatus: "pending_payment",
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-      },
-      {
-        registrationId: "CMC-2026-00002",
-        fullName: "Bethlehem Tadesse",
-        phone: "+251922334455",
-        email: "bethlehem@example.com",
-        telegramUsername: "@betty_t",
-        age: 21,
-        city: "Addis Ababa",
-        country: "Ethiopia",
-        instrumentName: "Piano",
-        programName: "Piano",
-        experienceLevel: "Intermediate",
-        previousExperience: "Yes",
-        learningFormat: "Online",
-        preferredDays: ["Monday", "Wednesday"],
-        preferredTime: "Evening",
-        goals: "Wants to improve gospel piano arrangements and key modulation.",
-        paymentStatus: "verified",
-        registrationStatus: "approved",
-        createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
-      }
-    ];
-    localStorage.setItem(MOCK_STORAGE_KEY_REGISTRATIONS, JSON.stringify(demoRegs));
+    localStorage.setItem(MOCK_STORAGE_KEY_REGISTRATIONS, JSON.stringify([]));
   }
 }
 
@@ -455,20 +410,14 @@ window.CMC_API = {
         if (err.code === 'auth/popup-closed-by-user') {
           return { success: false, error: 'Google sign-in popup was closed before completing.' };
         }
+        if (err.code === 'auth/unauthorized-domain') {
+          return { success: false, error: 'This domain (127.0.0.1) is not authorized in your new Firebase Console. Please browse using http://localhost:8080 or add 127.0.0.1 to Authorized Domains in Firebase.' };
+        }
         return { success: false, error: err.message };
       }
     }
 
-    // Mock Google Login
-    const mockGoogleUser = {
-      uid: 'google_user_' + Date.now(),
-      fullName: 'Google Student',
-      email: 'student.google@example.com',
-      emailVerified: true,
-      providerId: 'google.com'
-    };
-    localStorage.setItem(this.MOCK_STORAGE_KEY_STUDENT_SESSION, JSON.stringify(mockGoogleUser));
-    return { success: true, user: mockGoogleUser };
+    return { success: false, error: 'Firebase is not initialized. Please refresh the page.' };
   },
 
   sendStudentPasswordReset: async function(email) {
