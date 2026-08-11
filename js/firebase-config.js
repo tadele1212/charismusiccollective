@@ -120,6 +120,14 @@ window.CMC_API = {
           db.ref('registrations/' + regData.registrationId).set(regData),
           new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB write timeout - check Firebase connection")), 5000))
         ]);
+
+        if (regData.studentUid) {
+          db.ref('users/' + regData.studentUid).update({
+            registeredForClass: true,
+            lastRegistrationId: regData.registrationId,
+            updatedAt: new Date().toISOString()
+          }).catch(err => console.warn("Could not update user registeredForClass flag:", err));
+        }
         return { success: true, data: regData };
       } catch (err) {
         console.error("Firebase Realtime DB Registration Error:", err);
@@ -301,15 +309,40 @@ window.CMC_API = {
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_MESSAGES) || '[]');
   },
 
+  // Get All Account Leads (Users created account but may/may not have registered)
+  getAllUserLeads: async function() {
+    if (this.isFirebaseActive()) {
+      try {
+        const db = firebase.database();
+        const snap = await Promise.race([
+          db.ref('users').once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB users timeout")), 3000))
+        ]);
+        if (snap && snap.exists()) {
+          const val = snap.val();
+          const list = Object.keys(val).map(k => val[k]);
+          return list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        }
+        return [];
+      } catch (err) {
+        console.warn("Firebase user leads fetch warning:", err.message);
+        return [];
+      }
+    }
+    return JSON.parse(localStorage.getItem(this.MOCK_STORAGE_KEY_STUDENTS) || '[]');
+  },
+
   // Student Authentication & User Store APIs
   MOCK_STORAGE_KEY_STUDENTS: 'cmc_mock_student_users',
   MOCK_STORAGE_KEY_STUDENT_SESSION: 'cmc_mock_current_student',
 
-  registerStudent: async function(fullName, email, password) {
+  registerStudent: async function(fullName, email, password, phone = '') {
     const studentUser = {
       uid: 'user_' + Date.now(),
       fullName: fullName,
       email: email.toLowerCase().trim(),
+      phone: phone,
+      registeredForClass: false,
       emailVerified: false,
       photoURL: null,
       providerId: 'password',
@@ -323,15 +356,15 @@ window.CMC_API = {
         await authRes.user.sendEmailVerification().catch(() => {});
         studentUser.uid = authRes.user.uid;
 
-        // Try RTDB user sync with timeout; don't block account creation if RTDB is not created yet
+        // Save user lead profile to RTDB users/ node
         try {
           const db = firebase.database();
           await Promise.race([
             db.ref('users/' + studentUser.uid).set(studentUser),
-            new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB user sync timeout")), 3000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB user sync timeout")), 4000))
           ]);
         } catch (dbErr) {
-          console.warn("RTDB user profile sync warning (non-fatal):", dbErr.message);
+          console.warn("RTDB user profile sync warning:", dbErr.message);
         }
 
         localStorage.setItem(this.MOCK_STORAGE_KEY_STUDENT_SESSION, JSON.stringify(studentUser));
@@ -401,12 +434,38 @@ window.CMC_API = {
         const authRes = await firebase.auth().signInWithPopup(provider);
         const userObj = {
           uid: authRes.user.uid,
-          fullName: authRes.user.displayName,
+          fullName: authRes.user.displayName || authRes.user.email.split('@')[0],
           email: authRes.user.email,
+          phone: authRes.user.phoneNumber || 'Google Sign-In',
+          registeredForClass: false,
           emailVerified: true,
           photoURL: authRes.user.photoURL,
-          providerId: 'google.com'
+          providerId: 'google.com',
+          createdAt: new Date().toISOString()
         };
+
+        // Sync Google Lead Profile to RTDB users/ node so they appear in Admin Leads
+        try {
+          const db = firebase.database();
+          const userRef = db.ref('users/' + userObj.uid);
+          const snap = await userRef.once('value');
+          if (!snap.exists()) {
+            await userRef.set(userObj);
+          } else {
+            const existingData = snap.val();
+            userObj.phone = existingData.phone || userObj.phone;
+            userObj.registeredForClass = existingData.registeredForClass || false;
+            await userRef.update({
+              fullName: userObj.fullName,
+              email: userObj.email,
+              photoURL: userObj.photoURL,
+              updatedAt: new Date().toISOString()
+            });
+          }
+        } catch (dbErr) {
+          console.warn("RTDB Google user profile sync warning:", dbErr.message);
+        }
+
         localStorage.setItem(this.MOCK_STORAGE_KEY_STUDENT_SESSION, JSON.stringify(userObj));
         return { success: true, user: userObj };
       } catch (err) {

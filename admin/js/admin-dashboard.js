@@ -26,6 +26,11 @@ async function initAdminDashboard() {
     await renderApprovedStudentsTable();
   }
 
+  // Load student leads follow-up table if on students.html
+  if (document.getElementById('leads-tbody')) {
+    await renderStudentLeadsTable();
+  }
+
   // Load payment settings form if on payments.html or settings.html
   if (document.getElementById('payment-settings-form')) {
     await loadAdminPaymentSettings();
@@ -448,4 +453,63 @@ async function renderAdminMessages() {
     `;
   });
   container.innerHTML = html;
+}
+
+// Render Student Leads Table (Account Signups with Phone Numbers)
+async function renderStudentLeadsTable() {
+  const tbody = document.getElementById('leads-tbody');
+  if (!tbody) return;
+
+  const users = await window.CMC_API.getAllUserLeads();
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+          <i class="fas fa-users" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block;"></i>
+          No student account sign-ups recorded yet.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  let html = '';
+  users.forEach((u, idx) => {
+    const cleanPhone = (u.phone || '').replace(/[^0-9+]/g, '');
+    const isRegistered = u.registeredForClass;
+    const statusBadge = isRegistered 
+      ? `<span class="badge badge-approved"><i class="fas fa-check-circle"></i> Class Registered</span>`
+      : `<span class="badge badge-pending"><i class="fas fa-exclamation-circle"></i> Lead (No Class Yet)</span>`;
+
+    const telLink = cleanPhone ? `tel:${cleanPhone}` : '#';
+    const waLink = cleanPhone ? `https://wa.me/${cleanPhone.replace('+', '')}` : '#';
+
+    const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'Recent';
+
+    const isGoogle = u.providerId === 'google.com';
+    const providerBadge = isGoogle 
+      ? `<span style="font-size: 0.75rem; color: #4285F4; margin-left: 0.4rem;" title="Signed up via Google"><i class="fab fa-google"></i></span>`
+      : '';
+
+    const displayPhone = u.phone && u.phone !== 'Google Sign-In' ? u.phone : (isGoogle ? '<span style="color: var(--text-muted); font-size: 0.85rem;">Google Auth (No Phone)</span>' : 'N/A');
+
+    html += `
+      <tr>
+        <td>#${idx + 1}</td>
+        <td><strong>${u.fullName || 'Student'}</strong> ${providerBadge}</td>
+        <td><strong style="color: var(--primary-orange);">${displayPhone}</strong></td>
+        <td>${u.email}</td>
+        <td>${statusBadge}</td>
+        <td>${dateStr}</td>
+        <td>
+          <div style="display: flex; gap: 0.4rem;">
+            ${cleanPhone ? `<a href="${telLink}" class="btn btn-secondary btn-sm" title="Call Student"><i class="fas fa-phone-alt"></i> Call</a>` : `<a href="mailto:${u.email}" class="btn btn-secondary btn-sm" title="Email Student"><i class="fas fa-envelope"></i> Email</a>`}
+            ${cleanPhone ? `<a href="${waLink}" target="_blank" class="btn btn-secondary btn-sm" style="border-color: #25D366; color: #25D366;" title="WhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
 }

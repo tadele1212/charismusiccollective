@@ -93,9 +93,15 @@ function initSignUpForm() {
 
     const fullName = document.getElementById('reg-fullname').value.trim();
     const email = document.getElementById('reg-email').value.trim();
+    const phone = document.getElementById('reg-phone') ? document.getElementById('reg-phone').value.trim() : '';
     const password = document.getElementById('reg-password').value;
     const confirmPass = document.getElementById('reg-confirm-password').value;
     const terms = document.getElementById('reg-terms').checked;
+
+    if (!phone || phone.length < 8) {
+      window.showToast('Please enter a valid phone number for follow-up.', 'error');
+      return;
+    }
 
     if (!terms) {
       window.showToast('Please accept the terms and conditions.', 'error');
@@ -117,7 +123,7 @@ function initSignUpForm() {
     btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Account...`;
 
     try {
-      const res = await window.CMC_API.registerStudent(fullName, email, password);
+      const res = await window.CMC_API.registerStudent(fullName, email, password, phone);
 
       if (res.success) {
         window.showToast('Account created successfully! Verification email sent.', 'success');

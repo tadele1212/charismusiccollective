@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Registrations | Admin | Charis Music Collective</title>
+  <title>Student Leads | Admin | Charis Music Collective</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/admin.css">
@@ -18,9 +18,9 @@
 
     <nav class="sidebar-menu">
       <a href="index.html" class="sidebar-link"><i class="fas fa-chart-line"></i> Dashboard</a>
-      <a href="registrations.html" class="sidebar-link active"><i class="fas fa-id-card"></i> Registrations</a>
+      <a href="registrations.html" class="sidebar-link"><i class="fas fa-id-card"></i> Registrations</a>
       <a href="students.html" class="sidebar-link"><i class="fas fa-user-graduate"></i> Approved Students</a>
-      <a href="leads.html" class="sidebar-link"><i class="fas fa-user-plus"></i> Student Leads</a>
+      <a href="leads.html" class="sidebar-link active"><i class="fas fa-user-plus"></i> Student Leads</a>
       <a href="programs.html" class="sidebar-link"><i class="fas fa-music"></i> Programs</a>
       <a href="instruments.html" class="sidebar-link"><i class="fas fa-guitar"></i> Instruments</a>
       <a href="payments.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment Settings</a>
@@ -38,7 +38,7 @@
   <main class="admin-main">
     <header class="admin-topbar">
       <div class="admin-page-title">
-        <h2>Student Registrations Management</h2>
+        <h2>Student Account Leads & Follow-ups</h2>
       </div>
       <div class="admin-user-menu">
         <a href="../index.html" target="_blank" class="btn btn-secondary btn-sm"><i class="fas fa-external-link-alt"></i> View Site</a>
@@ -47,39 +47,32 @@
 
     <div class="admin-content">
       
+      <!-- Student Leads Table -->
       <div class="table-wrapper">
-        <div class="table-toolbar">
-          <div class="table-filter-group">
-            <span class="filter-chip active" data-filter="all">All Statuses</span>
-            <span class="filter-chip" data-filter="pending_payment">Pending Payment</span>
-            <span class="filter-chip" data-filter="payment_review">Payment Review</span>
-            <span class="filter-chip" data-filter="approved">Approved</span>
-            <span class="filter-chip" data-filter="rejected">Rejected</span>
-          </div>
-
-          <div class="table-search">
-            <i class="fas fa-search"></i>
-            <input type="text" id="table-search-input" placeholder="Search by name, ID, phone...">
+        <div class="table-toolbar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3><i class="fas fa-user-plus text-orange"></i> Registered Student Accounts</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+              <i class="fas fa-phone-alt"></i> Collect phone numbers and follow up with users who created an account
+            </p>
           </div>
         </div>
 
-        <div style="overflow-x: auto;">
+        <div style="overflow-x: auto; margin-top: 1rem;">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Registration ID</th>
-                <th>Student</th>
-                <th>Phone</th>
-                <th>Program</th>
-                <th>Format</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>#</th>
+                <th>Student Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Class Reg Status</th>
+                <th>Joined Date</th>
+                <th>Follow Up Action</th>
               </tr>
             </thead>
-            <tbody id="registrations-tbody">
-              <!-- Dynamically populated by admin-dashboard.js -->
+            <tbody id="leads-tbody">
+              <!-- Rendered by admin-dashboard.js -->
             </tbody>
           </table>
         </div>
