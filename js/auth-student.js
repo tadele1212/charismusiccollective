@@ -209,12 +209,14 @@ function initForgotPasswordModal() {
 
   trigger.addEventListener('click', function(e) {
     e.preventDefault();
+    if (document.getElementById('forgot-password-modal')) return;
+
     const modalHtml = `
       <div class="modal-overlay active" id="forgot-password-modal">
         <div class="modal-card" style="max-width: 440px;">
-          <button class="modal-close" onclick="document.getElementById('forgot-password-modal').remove()"><i class="fas fa-times"></i></button>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Reset Password</h3>
-          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Enter your email address and we will send you a link to reset your password.</p>
+          <button type="button" class="modal-close" onclick="document.getElementById('forgot-password-modal').remove()"><i class="fas fa-times"></i></button>
+          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);"><i class="fas fa-key"></i> Reset Password</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Enter your account email address below and we will send you an instant link to reset your password.</p>
           
           <form id="reset-password-form">
             <div class="form-group">
@@ -231,13 +233,26 @@ function initForgotPasswordModal() {
 
     document.getElementById('reset-password-form').addEventListener('submit', async function(ev) {
       ev.preventDefault();
-      const resetEmail = document.getElementById('reset-email').value.trim();
-      const res = await window.CMC_API.sendStudentPasswordReset(resetEmail);
-      if (res.success) {
-        window.showToast('Password reset link sent! Check your inbox.', 'success');
-        document.getElementById('forgot-password-modal').remove();
-      } else {
-        window.showToast(res.error || 'Failed to send reset email.', 'error');
+      const btn = this.querySelector('button[type="submit"]');
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending Link...`;
+
+      try {
+        const resetEmail = document.getElementById('reset-email').value.trim();
+        const res = await window.CMC_API.sendStudentPasswordReset(resetEmail);
+        if (res.success) {
+          window.showToast('Password reset link sent! Please check your email inbox.', 'success');
+          document.getElementById('forgot-password-modal').remove();
+        } else {
+          window.showToast(res.error || 'Failed to send password reset email.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
+      } catch (err) {
+        window.showToast('An error occurred. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = origText;
       }
     });
   });
