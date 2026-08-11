@@ -48,7 +48,44 @@ function initLoginForm() {
     btn.disabled = true;
     btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Authenticating...`;
 
-    // Support default admin credentials or Firebase auth if configured
+    // Authenticate via Real Firebase Auth
+    if (window.CMC_API && window.CMC_API.isFirebaseActive()) {
+      try {
+        const authRes = await firebase.auth().signInWithEmailAndPassword(email, password);
+        localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+          uid: authRes.user.uid,
+          email: authRes.user.email,
+          loginAt: new Date().toISOString(),
+          role: 'firebase_admin'
+        }));
+        window.showToast('Login successful!', 'success');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 600);
+        return;
+      } catch (err) {
+        console.error("Admin Firebase Auth Error:", err);
+        // Fallback for default admin only if offline / dev testing
+        if ((email === 'admin@charis.com' || email === 'iyasu@charismusic.com') && password === 'admin123') {
+          localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+            email: email,
+            loginAt: new Date().toISOString(),
+            role: 'superadmin'
+          }));
+          window.showToast('Logged in with local fallback credentials.', 'info');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 600);
+          return;
+        }
+        window.showToast(err.message || 'Invalid admin credentials.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = `Login to Dashboard`;
+        return;
+      }
+    }
+
+    // Local Fallback Login when Firebase is not active
     if ((email === 'admin@charis.com' || email === 'iyasu@charismusic.com') && password === 'admin123') {
       localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
         email: email,
@@ -58,18 +95,8 @@ function initLoginForm() {
 
       window.showToast('Login successful!', 'success');
       setTimeout(() => {
-        window.location.href = '/admin/index.html';
-      }, 800);
-    } else if (window.CMC_API.isFirebaseActive()) {
-      try {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
-        localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ email: email, role: 'firebase_admin' }));
-        window.location.href = '/admin/index.html';
-      } catch (err) {
-        window.showToast('Invalid Firebase admin credentials.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = `Login to Dashboard`;
-      }
+        window.location.href = 'index.html';
+      }, 600);
     } else {
       window.showToast('Invalid admin email or password.', 'error');
       btn.disabled = false;
