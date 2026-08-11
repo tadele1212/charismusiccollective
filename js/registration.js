@@ -224,11 +224,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // Submit via API adapter
       const res = await window.CMC_API.createRegistration(regPayload);
 
-      if (res.success) {
+      if (res && res.success) {
         window.showToast('Registration submitted successfully!', 'success');
         setTimeout(() => {
           window.location.href = `registration-success.html?id=${encodeURIComponent(registrationId)}`;
         }, 1200);
+      } else {
+        window.showToast(res.error || 'Failed to submit registration. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origText;
       }
     } catch (err) {
       console.error(err);

@@ -196,11 +196,12 @@ window.CMC_API = {
             paymentStatus: payStatus,
             updatedAt: new Date().toISOString()
           }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB update timeout")), 3500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB update timeout")), 4000))
         ]);
         return true;
       } catch (err) {
-        console.warn("Firebase Realtime DB update error, falling back to LocalStorage:", err.message);
+        console.error("Firebase Realtime DB update error:", err);
+        return false;
       }
     }
     const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
@@ -229,7 +230,7 @@ window.CMC_API = {
           return { general: data.general || {}, payment: data.payment || {} };
         }
       } catch (err) {
-        console.warn("Firebase Realtime DB settings error, falling back to LocalStorage:", err.message);
+        console.warn("Firebase Realtime DB settings fetch error:", err.message);
       }
     }
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS));
@@ -242,11 +243,12 @@ window.CMC_API = {
         const db = firebase.database();
         await Promise.race([
           db.ref('settings').set(settingsData),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB settings save timeout")), 3500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB settings save timeout")), 4000))
         ]);
         return true;
       } catch (err) {
-        console.warn("Firebase Realtime DB save settings error:", err.message);
+        console.error("Firebase Realtime DB save settings error:", err);
+        return false;
       }
     }
     localStorage.setItem(MOCK_STORAGE_KEY_SETTINGS, JSON.stringify(settingsData));
