@@ -205,9 +205,13 @@
           message: document.getElementById('c-message').value.trim()
         };
 
-        await window.CMC_API.saveMessage(payload);
-        window.showToast('Message sent successfully! We will contact you soon.', 'success');
-        this.reset();
+        const res = await window.CMC_API.saveMessage(payload);
+        if (res && res.success) {
+          window.showToast('Message sent successfully! We will contact you soon.', 'success');
+          this.reset();
+        } else {
+          window.showToast(res.error || 'Failed to send message.', 'error');
+        }
       } catch (err) {
         window.showToast('Failed to send message.', 'error');
       } finally {

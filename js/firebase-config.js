@@ -118,14 +118,15 @@ window.CMC_API = {
         const db = firebase.database();
         await Promise.race([
           db.ref('registrations/' + regData.registrationId).set(regData),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB sync timeout")), 3500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB write timeout - check Firebase connection")), 5000))
         ]);
         return { success: true, data: regData };
       } catch (err) {
-        console.warn("Firebase Realtime DB Error, falling back to LocalStorage:", err.message);
+        console.error("Firebase Realtime DB Registration Error:", err);
+        return { success: false, error: 'Database write failed: ' + err.message };
       }
     }
-    // LocalStorage Fallback
+    // LocalStorage Fallback (only when offline/no Firebase)
     const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
     existing.unshift(regData);
     localStorage.setItem(MOCK_STORAGE_KEY_REGISTRATIONS, JSON.stringify(existing));
@@ -263,17 +264,18 @@ window.CMC_API = {
         const db = firebase.database();
         await Promise.race([
           db.ref('messages/' + msgData.id).set(msgData),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB message timeout")), 3500))
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB message write timeout")), 5000))
         ]);
-        return true;
+        return { success: true };
       } catch (err) {
-        console.warn("Firebase Realtime DB message save error:", err.message);
+        console.error("Firebase Realtime DB Message Error:", err);
+        return { success: false, error: 'Failed to send message: ' + err.message };
       }
     }
     const msgs = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_MESSAGES) || '[]');
     msgs.unshift(msgData);
     localStorage.setItem(MOCK_STORAGE_KEY_MESSAGES, JSON.stringify(msgs));
-    return true;
+    return { success: true };
   },
 
   // Get All Messages (Admin)
