@@ -55,9 +55,27 @@ async function initAdminDashboard() {
 // Refresh KPI metrics cards
 async function refreshKPIStats() {
   const regs = await window.CMC_API.getAllRegistrations();
+  const leads = await window.CMC_API.getAllUserLeads();
   currentRegistrations = regs;
 
+  const approvedEmails = new Set(
+    regs.filter(r => r.registrationStatus === 'approved' || r.paymentStatus === 'verified')
+        .map(r => (r.email || '').toLowerCase().trim())
+  );
+  const approvedUids = new Set(
+    regs.filter(r => r.registrationStatus === 'approved' || r.paymentStatus === 'verified')
+        .map(r => r.studentUid)
+        .filter(Boolean)
+  );
+
+  const pendingLeads = leads.filter(u => {
+    const emailMatch = u.email && approvedEmails.has(u.email.toLowerCase().trim());
+    const uidMatch = u.uid && approvedUids.has(u.uid);
+    return !emailMatch && !uidMatch;
+  });
+
   const totalCount = regs.length;
+  const leadsCount = pendingLeads.length;
   const pendingCount = regs.filter(r => r.registrationStatus === 'pending_payment' || r.paymentStatus === 'pending').length;
   const reviewCount = regs.filter(r => r.registrationStatus === 'payment_review' || r.paymentStatus === 'receipt_submitted').length;
   const approvedCount = regs.filter(r => r.registrationStatus === 'approved' || r.paymentStatus === 'verified').length;
@@ -67,6 +85,7 @@ async function refreshKPIStats() {
   const todayCount = regs.filter(r => r.createdAt && r.createdAt.startsWith(todayStr)).length;
 
   if (document.getElementById('kpi-total')) document.getElementById('kpi-total').textContent = totalCount;
+  if (document.getElementById('kpi-leads')) document.getElementById('kpi-leads').textContent = leadsCount;
   if (document.getElementById('kpi-pending')) document.getElementById('kpi-pending').textContent = pendingCount;
   if (document.getElementById('kpi-review')) document.getElementById('kpi-review').textContent = reviewCount;
   if (document.getElementById('kpi-approved')) document.getElementById('kpi-approved').textContent = approvedCount;
@@ -461,13 +480,32 @@ async function renderStudentLeadsTable() {
   if (!tbody) return;
 
   const users = await window.CMC_API.getAllUserLeads();
+  const regs = await window.CMC_API.getAllRegistrations();
 
-  if (!users || users.length === 0) {
+  // Set of approved student emails and UIDs
+  const approvedEmails = new Set(
+    regs.filter(r => r.registrationStatus === 'approved' || r.paymentStatus === 'verified')
+        .map(r => (r.email || '').toLowerCase().trim())
+  );
+  const approvedUids = new Set(
+    regs.filter(r => r.registrationStatus === 'approved' || r.paymentStatus === 'verified')
+        .map(r => r.studentUid)
+        .filter(Boolean)
+  );
+
+  // Leads section only shows students who are NOT YET APPROVED
+  const pendingLeads = users.filter(u => {
+    const emailMatch = u.email && approvedEmails.has(u.email.toLowerCase().trim());
+    const uidMatch = u.uid && approvedUids.has(u.uid);
+    return !emailMatch && !uidMatch;
+  });
+
+  if (!pendingLeads || pendingLeads.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-          <i class="fas fa-users" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block;"></i>
-          No student account sign-ups recorded yet.
+          <i class="fas fa-check-double" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block; color: var(--status-approved);"></i>
+          All registered student leads have been approved into classes! No pending follow-ups.
         </td>
       </tr>
     `;
@@ -475,12 +513,12 @@ async function renderStudentLeadsTable() {
   }
 
   let html = '';
-  users.forEach((u, idx) => {
+  pendingLeads.forEach((u, idx) => {
     const cleanPhone = (u.phone || '').replace(/[^0-9+]/g, '');
     const isRegistered = u.registeredForClass;
     const statusBadge = isRegistered 
-      ? `<span class="badge badge-approved"><i class="fas fa-check-circle"></i> Class Registered</span>`
-      : `<span class="badge badge-pending"><i class="fas fa-exclamation-circle"></i> Lead (No Class Yet)</span>`;
+      ? `<span class="badge badge-review"><i class="fas fa-clock"></i> Class Reg Submitted (Pending Review)</span>`
+      : `<span class="badge badge-pending"><i class="fas fa-exclamation-circle"></i> Lead (No Class Selected)</span>`;
 
     const telLink = cleanPhone ? `tel:${cleanPhone}` : '#';
     const waLink = cleanPhone ? `https://wa.me/${cleanPhone.replace('+', '')}` : '#';
