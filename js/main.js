@@ -80,10 +80,10 @@ function initFloatingWidgets() {
 
   const widgetHtml = `
     <div class="floating-widgets">
-      <a href="${whatsappUrl}" target="_blank" class="float-btn float-whatsapp" title="Chat on WhatsApp" aria-label="WhatsApp">
+      <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="float-btn float-whatsapp" title="Chat on WhatsApp" aria-label="WhatsApp">
         <i class="fab fa-whatsapp"></i>
       </a>
-      <a href="${telegramUrl}" target="_blank" class="float-btn float-telegram" title="Contact on Telegram" aria-label="Telegram">
+      <a href="${telegramUrl}" target="_blank" rel="noopener noreferrer" class="float-btn float-telegram" title="Contact on Telegram" aria-label="Telegram">
         <i class="fab fa-telegram-plane"></i>
       </a>
     </div>

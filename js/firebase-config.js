@@ -53,7 +53,8 @@ const MOCK_STORAGE_KEY_ADMIN = 'cmc_mock_admin_session';
 
 // Initialize default mock settings if empty
 function initMockSettings() {
-  if (!localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS)) {
+  const existingSettings = localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS);
+  if (!existingSettings) {
     const defaultSettings = {
       general: {
         schoolName: "Charis Music Collective",
@@ -81,6 +82,24 @@ function initMockSettings() {
       }
     };
     localStorage.setItem(MOCK_STORAGE_KEY_SETTINGS, JSON.stringify(defaultSettings));
+  } else {
+    try {
+      const parsed = JSON.parse(existingSettings);
+      let updated = false;
+      if (parsed.general && (parsed.general.telegramUsername === 'IyasuMarkos' || !parsed.general.telegramUsername)) {
+        parsed.general.telegramUsername = 'Iyasu_Markos';
+        updated = true;
+      }
+      if (parsed.payment && (parsed.payment.telegramReceiptUsername === 'IyasuMarkos' || !parsed.payment.telegramReceiptUsername)) {
+        parsed.payment.telegramReceiptUsername = 'Iyasu_Markos';
+        updated = true;
+      }
+      if (updated) {
+        localStorage.setItem(MOCK_STORAGE_KEY_SETTINGS, JSON.stringify(parsed));
+      }
+    } catch (e) {
+      console.error("Error migrating local storage settings:", e);
+    }
   }
 
   if (!localStorage.getItem(MOCK_STORAGE_KEY_PROGRAMS)) {
@@ -226,6 +245,7 @@ window.CMC_API = {
 
   // Get Site & Payment Settings
   getSettings: async function() {
+    let res = null;
     if (this.isFirebaseActive()) {
       try {
         const db = firebase.database();
@@ -235,13 +255,25 @@ window.CMC_API = {
         ]);
         if (snap && snap.exists()) {
           const data = snap.val();
-          return { general: data.general || {}, payment: data.payment || {} };
+          res = { general: data.general || {}, payment: data.payment || {} };
         }
       } catch (err) {
         console.warn("Firebase Realtime DB settings fetch error:", err.message);
       }
     }
-    return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS));
+    if (!res) {
+      res = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_SETTINGS)) || {};
+    }
+    if (!res.general) res.general = {};
+    if (!res.payment) res.payment = {};
+
+    if (res.general.telegramUsername === 'IyasuMarkos' || !res.general.telegramUsername) {
+      res.general.telegramUsername = 'Iyasu_Markos';
+    }
+    if (res.payment.telegramReceiptUsername === 'IyasuMarkos' || !res.payment.telegramReceiptUsername) {
+      res.payment.telegramReceiptUsername = 'Iyasu_Markos';
+    }
+    return res;
   },
 
   // Save Settings (Admin)
