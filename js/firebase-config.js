@@ -61,7 +61,7 @@ function initMockSettings() {
         phone: "+251 910 070 940",
         email: "contact@charismusiccollective.com",
         whatsapp: "+251910070940",
-        telegramUsername: "IyasuMarkos",
+        telegramUsername: "Iyasu_Markos",
         heroTitle: "LEARN MUSIC. CREATE YOUR SOUND.",
         heroSubtitle: "ONLINE & IN-PERSON MUSIC CLASSES",
         instructorName: "Iyasu Markos",
@@ -77,7 +77,7 @@ function initMockSettings() {
         accountNumber: "1000123456789",
         telebirrNumber: "+251 910 070 940",
         instructions: "Please make payment using your Registration ID as the reference/memo, then send your receipt via Telegram.",
-        telegramReceiptUsername: "IyasuMarkos"
+        telegramReceiptUsername: "Iyasu_Markos"
       }
     };
     localStorage.setItem(MOCK_STORAGE_KEY_SETTINGS, JSON.stringify(defaultSettings));

@@ -323,7 +323,7 @@ async function loadAdminPaymentSettings() {
   document.getElementById('telebirrNumber').value = p.telebirrNumber || '';
   document.getElementById('paymentAmount').value = p.amount || 3500;
   document.getElementById('currency').value = p.currency || 'ETB';
-  document.getElementById('telegramReceiptUsername').value = p.telegramReceiptUsername || 'IyasuMarkos';
+  document.getElementById('telegramReceiptUsername').value = p.telegramReceiptUsername || 'Iyasu_Markos';
   document.getElementById('paymentInstructions').value = p.instructions || '';
 
   form.addEventListener('submit', async function(e) {

@@ -152,9 +152,9 @@ async function renderStudentRegistrations(user) {
           <div style="background: rgba(0, 136, 204, 0.12); border: 1px solid rgba(0, 136, 204, 0.3); padding: 1.5rem; border-radius: var(--radius-md); text-align: center;">
             <h4 style="color: #0088cc; margin-bottom: 0.4rem;"><i class="fab fa-telegram-plane"></i> Next Step: Telegram Payment Verification</h4>
             <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.2rem;">
-              Send your payment receipt screenshot with Registration ID <strong>${reg.registrationId}</strong> to Telegram handle <strong>@IyasuMarkos</strong>.
+              Send your payment receipt screenshot with Registration ID <strong>${reg.registrationId}</strong> to Telegram handle <strong>@Iyasu_Markos</strong>.
             </p>
-            <a href="https://t.me/IyasuMarkos?text=${encodeURIComponent('Hello Charis Music Collective, here is my payment receipt for ' + reg.registrationId)}" target="_blank" class="btn btn-primary" style="background: linear-gradient(135deg, #0088cc 0%, #00aaff 100%); color: white;">
+            <a href="https://t.me/Iyasu_Markos?text=${encodeURIComponent('Hello Charis Music Collective, here is my payment receipt for ' + reg.registrationId)}" target="_blank" class="btn btn-primary" style="background: linear-gradient(135deg, #0088cc 0%, #00aaff 100%); color: white;">
               <i class="fab fa-telegram-plane"></i> SEND RECEIPT ON TELEGRAM NOW
             </a>
           </div>

@@ -76,7 +76,7 @@ function initFloatingWidgets() {
   const phone = "+251910070940";
   const message = encodeURIComponent("Hello Charis Music Collective, I would like to learn more about your music classes.");
   const whatsappUrl = `https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${message}`;
-  const telegramUrl = `https://t.me/IyasuMarkos`;
+  const telegramUrl = `https://t.me/Iyasu_Markos`;
 
   const widgetHtml = `
     <div class="floating-widgets">

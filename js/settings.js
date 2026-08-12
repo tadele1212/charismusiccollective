@@ -32,7 +32,7 @@ async function loadGlobalSettings() {
     if (payTelebirrNumber) payTelebirrNumber.textContent = settings.payment.telebirrNumber || '+251 910 070 940';
     if (payAmount) payAmount.textContent = `${settings.payment.amount || 3500} ${settings.payment.currency || 'ETB'}`;
     
-    const tgUser = settings.payment.telegramReceiptUsername || settings.general.telegramUsername || 'IyasuMarkos';
+    const tgUser = settings.payment.telegramReceiptUsername || settings.general.telegramUsername || 'Iyasu_Markos';
     const cleanTgUser = tgUser.replace('@', '');
 
     if (payTelegramUsername) payTelegramUsername.textContent = `@${cleanTgUser}`;
