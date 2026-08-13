@@ -162,29 +162,57 @@ window.CMC_API = {
 
   // Get Registration by ID
   getRegistrationById: async function(regId) {
+    if (!regId) return null;
+    const cleanId = regId.trim();
+    const upperId = cleanId.toUpperCase();
+
+    // 1. Search all registrations (handles Firebase RTDB and LocalStorage, case-insensitive)
+    try {
+      const allRegs = await this.getAllRegistrations();
+      if (allRegs && allRegs.length > 0) {
+        const match = allRegs.find(r => {
+          const id = (r.registrationId || r.id || '').toUpperCase();
+          const cleanMatchId = id.replace(/[^A-Z0-9]/g, '');
+          const cleanSearchId = upperId.replace(/[^A-Z0-9]/g, '');
+          return id === upperId || cleanMatchId === cleanSearchId;
+        });
+        if (match) return match;
+      }
+    } catch (err) {
+      console.warn("Error fetching all registrations for lookup:", err);
+    }
+
+    // 2. Direct RTDB Key Lookup fallback
     if (this.isFirebaseActive()) {
       try {
         const db = firebase.database();
-        const snap = await Promise.race([
-          db.ref('registrations/' + regId).once('value'),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB get timeout")), 3000))
+        let snap = await Promise.race([
+          db.ref('registrations/' + cleanId).once('value'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB get timeout")), 2000))
         ]);
         if (snap && snap.exists()) return snap.val();
+
+        if (cleanId !== upperId) {
+          snap = await db.ref('registrations/' + upperId).once('value').catch(() => null);
+          if (snap && snap.exists()) return snap.val();
+        }
       } catch (err) {
-        console.warn("Firebase Realtime DB get error, falling back to LocalStorage:", err.message);
+        console.warn("Firebase RTDB direct get error:", err.message);
       }
     }
-    const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
-    return existing.find(r => r.registrationId.toUpperCase() === regId.toUpperCase()) || null;
+
+    return null;
   },
 
-  // Query Registration by ID and Phone
-  queryRegistration: async function(regId, phone) {
+  // Query Registration by ID (and optional Phone)
+  queryRegistration: async function(regId, phone = '') {
+    if (!regId) return null;
     const record = await this.getRegistrationById(regId);
     if (record) {
+      if (!phone) return record;
       const cleanPhone = phone.replace(/[^0-9]/g, '');
-      const recPhone = record.phone.replace(/[^0-9]/g, '');
-      if (recPhone.includes(cleanPhone) || cleanPhone.includes(recPhone)) {
+      const recPhone = (record.phone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || recPhone.includes(cleanPhone) || cleanPhone.includes(recPhone)) {
         return record;
       }
     }

@@ -267,6 +267,8 @@ function redirectPostAuth() {
     if (redirectTarget === 'register' || urlParams.get('program')) {
       const prog = urlParams.get('program') ? `?program=${urlParams.get('program')}` : '';
       window.location.href = `register.html${prog}`;
+    } else if (redirectTarget === 'check-status') {
+      window.location.href = 'check-status.html';
     } else {
       window.location.href = 'student-dashboard.html';
     }
