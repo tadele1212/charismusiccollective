@@ -2,7 +2,7 @@
    CHARIS MUSIC COLLECTIVE - Main JavaScript (UI Interactivity)
    ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   initStickyHeader();
   initMobileNav();
   highlightActiveNav();
@@ -17,7 +17,7 @@ function initStickyHeader() {
   const header = document.querySelector('.header');
   if (!header) return;
 
-  window.addEventListener('scroll', function() {
+  window.addEventListener('scroll', function () {
     if (window.scrollY > 40) {
       header.classList.add('scrolled');
     } else {
@@ -32,7 +32,7 @@ function initMobileNav() {
   const navMenu = document.querySelector('.nav-menu');
   if (!toggleBtn || !navMenu) return;
 
-  toggleBtn.addEventListener('click', function() {
+  toggleBtn.addEventListener('click', function () {
     navMenu.classList.toggle('open');
     const icon = toggleBtn.querySelector('i');
     if (icon) {
@@ -45,7 +45,7 @@ function initMobileNav() {
   });
 
   // Close nav on click outside or item click
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function (e) {
     if (!toggleBtn.contains(e.target) && !navMenu.contains(e.target)) {
       navMenu.classList.remove('open');
       const icon = toggleBtn.querySelector('i');
@@ -58,7 +58,7 @@ function initMobileNav() {
 function highlightActiveNav() {
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   const navLinks = document.querySelectorAll('.nav-link');
-  
+
   navLinks.forEach(link => {
     const href = link.getAttribute('href');
     if (href === currentPath || (currentPath === '' && href === 'index.html')) {
@@ -100,11 +100,11 @@ function initToastSystem() {
   }
 }
 
-window.showToast = function(message, type = 'info') {
+window.showToast = function (message, type = 'info') {
   const container = document.querySelector('.toast-container') || document.body;
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  
+
   let iconClass = 'fa-info-circle';
   if (type === 'success') iconClass = 'fa-check-circle';
   if (type === 'error') iconClass = 'fa-exclamation-circle';
@@ -123,12 +123,14 @@ window.showToast = function(message, type = 'info') {
 function initUserHeaderState() {
   const user = window.CMC_API && window.CMC_API.getCurrentStudentUser ? window.CMC_API.getCurrentStudentUser() : null;
   const navActions = document.querySelector('.nav-actions');
+  const navMenu = document.querySelector('.nav-menu');
 
   if (user) {
+    const firstName = user.fullName ? user.fullName.split(' ')[0] : 'Student';
+
     if (navActions) {
       const existingCta = navActions.querySelector('.btn-primary');
       if (existingCta) {
-        const firstName = user.fullName ? user.fullName.split(' ')[0] : 'Student';
         const badgeHtml = `
           <a href="student-dashboard.html" class="user-badge-nav">
             <i class="fas fa-user-circle"></i> ${firstName} (Dashboard)
@@ -136,6 +138,14 @@ function initUserHeaderState() {
         `;
         existingCta.outerHTML = badgeHtml;
       }
+    }
+
+    if (navMenu && !navMenu.querySelector('.mobile-user-badge')) {
+      const mobileBadge = document.createElement('a');
+      mobileBadge.href = 'student-dashboard.html';
+      mobileBadge.className = 'nav-link mobile-user-badge';
+      mobileBadge.innerHTML = `<i class="fas fa-user-circle"></i> ${firstName} (Dashboard)`;
+      navMenu.appendChild(mobileBadge);
     }
 
     // Rewrite all student-auth links to direct register.html links for logged-in students
@@ -147,7 +157,7 @@ function initUserHeaderState() {
           const url = new URL(href, window.location.origin);
           program = url.searchParams.get('program') || '';
           format = url.searchParams.get('format') || '';
-        } catch (err) {}
+        } catch (err) { }
 
         let regUrl = 'register.html';
         const params = [];
@@ -158,18 +168,26 @@ function initUserHeaderState() {
         link.setAttribute('href', regUrl);
       }
     });
+  } else {
+    if (navMenu && !navMenu.querySelector('.mobile-nav-cta')) {
+      const mobileCta = document.createElement('a');
+      mobileCta.href = 'student-auth.html?mode=signup&redirect=register';
+      mobileCta.className = 'btn btn-primary btn-block mobile-nav-cta';
+      mobileCta.innerHTML = `<i class="fas fa-play-circle"></i> JOIN A CLASS`;
+      navMenu.appendChild(mobileCta);
+    }
   }
 }
 
 // Registration Auth Guard Interceptor
 function initRegistrationAuthGuard() {
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', function (e) {
     const link = e.target.closest('a[href*="student-auth.html"]');
     if (!link) return;
 
     const user = window.CMC_API && window.CMC_API.getCurrentStudentUser ? window.CMC_API.getCurrentStudentUser() : null;
     const href = link.getAttribute('href');
-    
+
     // If student IS logged in and clicking a registration auth link, bypass auth and go straight to register.html!
     if (user && href.includes('redirect=register')) {
       e.preventDefault();
@@ -178,7 +196,7 @@ function initRegistrationAuthGuard() {
         const url = new URL(href, window.location.origin);
         program = url.searchParams.get('program') || '';
         format = url.searchParams.get('format') || '';
-      } catch (err) {}
+      } catch (err) { }
 
       let regUrl = 'register.html';
       const params = [];

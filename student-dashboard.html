@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Portal | Charis Music Collective</title>
-  <meta name="description" content="Manage your music class registrations, track payment verification status, and contact your instructor.">
+  <meta name="description"
+    content="Manage your music class registrations, track payment verification status, and contact your instructor.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
 </head>
+
 <body>
 
   <!-- Navigation -->
@@ -34,19 +37,22 @@
       </nav>
 
       <div class="nav-actions">
-        <button id="student-logout-btn" class="btn btn-secondary btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button id="student-logout-btn" class="btn btn-secondary btn-sm"><i class="fas fa-sign-out-alt"></i>
+          Logout</button>
         <button class="mobile-nav-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
       </div>
     </div>
   </header>
 
   <!-- Banner -->
-  <section class="section-padding" style="padding-top: calc(var(--nav-height) + 3rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary);">
+  <section class="section-padding"
+    style="padding-top: calc(var(--nav-height) + 3rem); background: radial-gradient(circle at 50% 20%, rgba(244, 123, 32, 0.15) 0%, rgba(8,8,8,0) 70%), var(--bg-primary);">
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
         <div>
           <span class="section-label"><i class="fas fa-user-graduate"></i> STUDENT PORTAL</span>
-          <h1 class="section-title" style="margin-bottom: 0.4rem;">WELCOME, <span id="student-display-name">STUDENT</span></h1>
+          <h1 class="section-title" style="margin-bottom: 0.4rem;">WELCOME, <span
+              id="student-display-name">STUDENT</span></h1>
           <p id="student-display-email" style="color: var(--primary-orange); font-weight: 600;">student@example.com</p>
         </div>
         <div>
@@ -59,13 +65,14 @@
   <!-- Dashboard Main Content -->
   <section class="section-padding bg-secondary-section">
     <div class="container" style="max-width: 900px;">
-      
+
       <!-- Email Verification Warning Banner (If unverified) -->
       <div id="email-verification-banner" style="display: none;"></div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h2 style="font-size: 1.6rem;"><i class="fas fa-list-alt text-orange"></i> Your Class Registrations</h2>
-        <a href="check-status.html" style="font-size: 0.88rem; color: var(--text-muted);"><i class="fas fa-search"></i> Public Quick Lookup</a>
+        <a href="check-status.html" style="font-size: 0.88rem; color: var(--text-muted);"><i class="fas fa-search"></i>
+          Public Quick Lookup</a>
       </div>
 
       <!-- Registrations Container -->
@@ -98,7 +105,8 @@
         <div class="footer-links">
           <h4>Need Assistance?</h4>
           <p><i class="fas fa-phone text-orange"></i> +251 910 070 940</p>
-          <p><i class="fab fa-telegram-plane text-orange"></i> <a href="https://t.me/Iyasu_Markos" target="_blank" rel="noopener noreferrer" style="color: inherit;">@Iyasu_Markos</a></p>
+          <p><i class="fab fa-telegram-plane text-orange"></i> <a href="https://t.me/Iyasu_Markos" target="_blank"
+              rel="noopener noreferrer" style="color: inherit;">@Iyasu_Markos</a></p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -116,4 +124,5 @@
   <script src="js/student-portal.js"></script>
   <script src="js/settings.js"></script>
 </body>
+
 </html>

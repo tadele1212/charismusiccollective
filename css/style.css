@@ -14,7 +14,7 @@
   --bg-card: #171717;
   --bg-card-hover: #1f1f1f;
   --bg-glass: rgba(23, 23, 23, 0.75);
-  
+
   --primary-orange: #F47B20;
   --bright-orange: #FF8A25;
   --dark-orange: #c45b0a;
@@ -57,7 +57,9 @@
 }
 
 /* Reset & Base Setup */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -78,7 +80,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-white);
   font-family: var(--font-heading);
   font-weight: 700;
@@ -101,7 +108,10 @@ img {
   display: block;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -281,7 +291,8 @@ button, input, select, textarea {
   padding: 0.4rem 0;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--bright-orange);
 }
 
@@ -322,7 +333,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   background: radial-gradient(circle at 75% 30%, rgba(244, 123, 32, 0.15) 0%, rgba(8, 8, 8, 0) 60%),
-              var(--bg-primary);
+    var(--bg-primary);
   overflow: hidden;
 }
 
@@ -697,8 +708,15 @@ button, input, select, textarea {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .form-group {
@@ -767,7 +785,7 @@ button, input, select, textarea {
   gap: 0.5rem;
 }
 
-.option-card-radio input:checked + .option-card-content {
+.option-card-radio input:checked+.option-card-content {
   border-color: var(--primary-orange);
   background: rgba(244, 123, 32, 0.1);
   box-shadow: 0 0 15px rgba(244, 123, 32, 0.2);
@@ -1036,12 +1054,24 @@ button, input, select, textarea {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.toast-success { border-color: #27AE60; }
-.toast-error { border-color: #EB5757; }
+.toast-success {
+  border-color: #27AE60;
+}
+
+.toast-error {
+  border-color: #EB5757;
+}
 
 /* ==========================================================================
    STUDENT AUTHENTICATION & PORTAL STYLES
@@ -1117,14 +1147,20 @@ button, input, select, textarea {
   margin: 1.5rem 0;
 }
 
-.auth-divider::before, .auth-divider::after {
+.auth-divider::before,
+.auth-divider::after {
   content: '';
   flex: 1;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.auth-divider::before { margin-right: 0.8em; }
-.auth-divider::after { margin-left: 0.8em; }
+.auth-divider::before {
+  margin-right: 0.8em;
+}
+
+.auth-divider::after {
+  margin-left: 0.8em;
+}
 
 .password-match-status {
   font-size: 0.8rem;
@@ -1134,8 +1170,13 @@ button, input, select, textarea {
   gap: 0.4rem;
 }
 
-.password-match-status.valid { color: #27AE60; }
-.password-match-status.invalid { color: #EB5757; }
+.password-match-status.valid {
+  color: #27AE60;
+}
+
+.password-match-status.invalid {
+  color: #EB5757;
+}
 
 /* Student Portal Timeline */
 .status-timeline {
@@ -1268,4 +1309,3 @@ button, input, select, textarea {
 .modal-close:hover {
   color: var(--bright-orange);
 }
-

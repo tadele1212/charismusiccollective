@@ -153,11 +153,25 @@
   background: var(--border-subtle);
 }
 
-.kpi-card.kpi-total::after { background: var(--bright-orange); }
-.kpi-card.kpi-pending::after { background: var(--status-pending); }
-.kpi-card.kpi-review::after { background: var(--status-review); }
-.kpi-card.kpi-approved::after { background: var(--status-approved); }
-.kpi-card.kpi-rejected::after { background: var(--status-rejected); }
+.kpi-card.kpi-total::after {
+  background: var(--bright-orange);
+}
+
+.kpi-card.kpi-pending::after {
+  background: var(--status-pending);
+}
+
+.kpi-card.kpi-review::after {
+  background: var(--status-review);
+}
+
+.kpi-card.kpi-approved::after {
+  background: var(--status-approved);
+}
+
+.kpi-card.kpi-rejected::after {
+  background: var(--status-rejected);
+}
 
 .kpi-header {
   display: flex;
@@ -285,25 +299,29 @@
   text-transform: uppercase;
 }
 
-.badge-pending_payment, .badge-pending {
+.badge-pending_payment,
+.badge-pending {
   background: rgba(245, 166, 35, 0.15);
   color: var(--status-pending);
   border: 1px solid rgba(245, 166, 35, 0.3);
 }
 
-.badge-payment_review, .badge-receipt_submitted {
+.badge-payment_review,
+.badge-receipt_submitted {
   background: rgba(47, 128, 237, 0.15);
   color: var(--status-review);
   border: 1px solid rgba(47, 128, 237, 0.3);
 }
 
-.badge-approved, .badge-verified {
+.badge-approved,
+.badge-verified {
   background: rgba(39, 174, 96, 0.15);
   color: var(--status-approved);
   border: 1px solid rgba(39, 174, 96, 0.3);
 }
 
-.badge-rejected, .badge-cancelled {
+.badge-rejected,
+.badge-cancelled {
   background: rgba(235, 87, 87, 0.15);
   color: var(--status-rejected);
   border: 1px solid rgba(235, 87, 87, 0.3);
@@ -365,9 +383,11 @@
   .admin-sidebar {
     transform: translateX(-100%);
   }
+
   .admin-sidebar.open {
     transform: translateX(0);
   }
+
   .admin-main {
     margin-left: 0;
   }
