@@ -14,7 +14,8 @@ body.menu-open {
 
 /* Hide mobile navigation drawer elements by default on desktop screens */
 .mobile-user-badge,
-.mobile-nav-cta {
+.mobile-nav-cta,
+.mobile-logout-btn {
   display: none !important;
 }
 
@@ -189,6 +190,28 @@ body.menu-open {
     font-weight: 700 !important;
     border-radius: var(--radius-sm);
     box-shadow: 0 4px 15px rgba(244, 123, 32, 0.2);
+  }
+
+  .mobile-logout-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(235, 87, 87, 0.15) !important;
+    border: 1px solid rgba(235, 87, 87, 0.35) !important;
+    color: #eb5757 !important;
+    font-weight: 700 !important;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .mobile-logout-btn:hover {
+    background: rgba(235, 87, 87, 0.25) !important;
   }
 
   .grid-2, .grid-3, .grid-4 {

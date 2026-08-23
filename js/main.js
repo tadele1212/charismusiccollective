@@ -140,12 +140,22 @@ function initUserHeaderState() {
       }
     }
 
-    if (navMenu && !navMenu.querySelector('.mobile-user-badge')) {
-      const mobileBadge = document.createElement('a');
-      mobileBadge.href = 'student-dashboard.html';
-      mobileBadge.className = 'nav-link mobile-user-badge';
-      mobileBadge.innerHTML = `<i class="fas fa-user-circle"></i> ${firstName} (Dashboard)`;
-      navMenu.appendChild(mobileBadge);
+    if (navMenu) {
+      if (!navMenu.querySelector('.mobile-user-badge')) {
+        const mobileBadge = document.createElement('a');
+        mobileBadge.href = 'student-dashboard.html';
+        mobileBadge.className = 'nav-link mobile-user-badge';
+        mobileBadge.innerHTML = `<i class="fas fa-user-circle"></i> ${firstName} (Dashboard)`;
+        navMenu.appendChild(mobileBadge);
+      }
+
+      if (!navMenu.querySelector('.mobile-logout-btn')) {
+        const mobileLogout = document.createElement('button');
+        mobileLogout.type = 'button';
+        mobileLogout.className = 'mobile-logout-btn btn-logout-student';
+        mobileLogout.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout (${firstName})`;
+        navMenu.appendChild(mobileLogout);
+      }
     }
 
     // Rewrite all student-auth links to direct register.html links for logged-in students
@@ -177,6 +187,23 @@ function initUserHeaderState() {
       navMenu.appendChild(mobileCta);
     }
   }
+
+  // Global Student Logout event handler
+  document.addEventListener('click', function (e) {
+    const logoutBtn = e.target.closest('#student-logout-btn, .mobile-logout-btn, .btn-logout-student');
+    if (logoutBtn) {
+      e.preventDefault();
+      if (window.CMC_API && window.CMC_API.logoutStudentUser) {
+        window.CMC_API.logoutStudentUser();
+      }
+      if (window.showToast) {
+        window.showToast('Logged out successfully.', 'info');
+      }
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 350);
+    }
+  });
 }
 
 // Registration Auth Guard Interceptor
