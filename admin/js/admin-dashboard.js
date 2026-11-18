@@ -181,7 +181,7 @@ window.openStudentModal = function(regId) {
             <p><strong>Phone:</strong> ${reg.phone}</p>
             <p><strong>Email:</strong> ${reg.email}</p>
             <p><strong>Telegram:</strong> <a href="https://t.me/${reg.telegramUsername.replace('@', '')}" target="_blank" style="color: #0088cc;">${reg.telegramUsername}</a></p>
-            <p><strong>Age:</strong> ${reg.age} years</p>
+            ${reg.age ? `<p><strong>Age:</strong> ${reg.age} years</p>` : ''}
             <p><strong>Location:</strong> ${reg.city}, ${reg.country}</p>
           </div>
 

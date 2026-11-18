@@ -99,12 +99,21 @@ async function renderStudentRegistrations(user) {
       statusBadgeClass = 'badge-rejected';
     }
 
+    const isApproved = (reg.registrationStatus === 'approved' || reg.paymentStatus === 'verified');
+
     html += `
       <div class="card" style="margin-bottom: 2rem; border-color: var(--orange-border);">
         
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <span class="reg-id-badge" style="margin: 0; font-size: 1.1rem;">${reg.registrationId}</span>
+            <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+              <span class="reg-id-badge" style="margin: 0; font-size: 1.1rem;">${reg.registrationId}</span>
+              ${!isApproved ? `
+                <a href="register.html?edit=${encodeURIComponent(reg.registrationId)}" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.8rem; font-size: 0.82rem; border-color: var(--orange-border); color: var(--bright-orange);">
+                  <i class="fas fa-edit"></i> Modify Application
+                </a>
+              ` : ''}
+            </div>
             <h3 style="font-size: 1.5rem; margin-top: 0.4rem;">${reg.programName} Class</h3>
           </div>
           <span class="badge ${statusBadgeClass}" style="font-size: 0.9rem; padding: 0.5rem 1rem;">

@@ -240,6 +240,37 @@ window.CMC_API = {
     return JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
   },
 
+  // Update Existing Registration Details (Student/Admin)
+  updateRegistration: async function(regId, updatedFields) {
+    if (!regId) return { success: false, error: 'Registration ID required' };
+    const now = new Date().toISOString();
+    const cleanFields = { ...updatedFields, updatedAt: now };
+
+    if (this.isFirebaseActive()) {
+      try {
+        const db = firebase.database();
+        await Promise.race([
+          db.ref('registrations/' + regId).update(cleanFields),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB update timeout")), 5000))
+        ]);
+        return { success: true };
+      } catch (err) {
+        console.error("Firebase update registration error:", err);
+        return { success: false, error: err.message };
+      }
+    }
+
+    // LocalStorage Fallback
+    const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
+    const index = existing.findIndex(r => (r.registrationId || '').toUpperCase() === regId.toUpperCase());
+    if (index !== -1) {
+      existing[index] = { ...existing[index], ...cleanFields };
+      localStorage.setItem(MOCK_STORAGE_KEY_REGISTRATIONS, JSON.stringify(existing));
+      return { success: true };
+    }
+    return { success: false, error: 'Registration not found' };
+  },
+
   // Update Registration Status (Admin)
   updateRegistrationStatus: async function(regId, regStatus, payStatus) {
     if (this.isFirebaseActive()) {

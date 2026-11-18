@@ -753,6 +753,16 @@ textarea {
   box-shadow: 0 0 10px rgba(244, 123, 32, 0.2);
 }
 
+select.form-control {
+  cursor: pointer;
+}
+
+select.form-control option {
+  background-color: #121212;
+  color: #ffffff;
+  padding: 8px;
+}
+
 .option-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
