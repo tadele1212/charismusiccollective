@@ -272,16 +272,19 @@ window.CMC_API = {
   },
 
   // Update Registration Status (Admin)
-  updateRegistrationStatus: async function(regId, regStatus, payStatus) {
+  updateRegistrationStatus: async function(regId, regStatus, payStatus, extraFields = {}) {
+    const updatePayload = {
+      registrationStatus: regStatus,
+      paymentStatus: payStatus,
+      updatedAt: new Date().toISOString(),
+      ...extraFields
+    };
+
     if (this.isFirebaseActive()) {
       try {
         const db = firebase.database();
         await Promise.race([
-          db.ref('registrations/' + regId).update({
-            registrationStatus: regStatus,
-            paymentStatus: payStatus,
-            updatedAt: new Date().toISOString()
-          }),
+          db.ref('registrations/' + regId).update(updatePayload),
           new Promise((_, reject) => setTimeout(() => reject(new Error("RTDB update timeout")), 4000))
         ]);
         return true;
@@ -293,9 +296,7 @@ window.CMC_API = {
     const existing = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY_REGISTRATIONS) || '[]');
     const index = existing.findIndex(r => r.registrationId === regId);
     if (index !== -1) {
-      existing[index].registrationStatus = regStatus;
-      existing[index].paymentStatus = payStatus;
-      existing[index].updatedAt = new Date().toISOString();
+      existing[index] = { ...existing[index], ...updatePayload };
       localStorage.setItem(MOCK_STORAGE_KEY_REGISTRATIONS, JSON.stringify(existing));
       return true;
     }

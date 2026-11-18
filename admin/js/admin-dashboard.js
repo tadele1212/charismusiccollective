@@ -190,8 +190,12 @@ window.openStudentModal = function(regId) {
             <p><strong>Selected Program:</strong> ${reg.programName}</p>
             <p><strong>Skill Level:</strong> ${reg.experienceLevel} (Studied before: ${reg.previousExperience})</p>
             <p><strong>Format:</strong> ${reg.learningFormat}</p>
-            <p><strong>Preferred Days:</strong> ${(reg.preferredDays || []).join(', ')}</p>
-            <p><strong>Preferred Time:</strong> ${reg.preferredTime}</p>
+            <p><strong>Frequency:</strong> ${reg.frequency === '2_days' ? '2 Days / Week (2 sessions × 1 hr)' : '1 Day / Week (1 session × 2 hrs)'}</p>
+            <p><strong>Weekly Day(s):</strong> Every ${(reg.preferredDays || []).join(', ') || reg.preferredDay || 'Saturday'}</p>
+            <p><strong>Student Local Time:</strong> ${reg.preferredTime} <span class="badge" style="background: rgba(0,136,204,0.15); color: #0088cc; font-size: 0.8rem;">${reg.studentTimeZone || 'Local'}</span></p>
+            ${reg.instructorTimeEAT ? `<p><strong>Instructor Time (Addis Ababa EAT):</strong> <span class="badge" style="background: rgba(244,123,32,0.15); color: var(--bright-orange); font-size: 0.85rem;"><i class="fas fa-clock"></i> ${reg.instructorTimeEAT}</span></p>` : ''}
+            ${reg.approvedAt ? `<p><strong>Approved Date:</strong> ${new Date(reg.approvedAt).toLocaleDateString()}</p>` : ''}
+            ${reg.nextPaymentDue ? `<p><strong>Next Payment Due:</strong> <span class="badge" style="background: rgba(39,174,96,0.2); color: #27AE60;">${new Date(reg.nextPaymentDue).toLocaleDateString()}</span></p>` : ''}
           </div>
         </div>
 
@@ -201,10 +205,20 @@ window.openStudentModal = function(regId) {
         </div>
 
         <div style="background: rgba(244,123,32,0.1); border: 1px solid var(--orange-border); padding: 1.2rem; border-radius: var(--radius-sm); margin-bottom: 2rem;">
-          <h4 style="color: var(--bright-orange); margin-bottom: 0.6rem;"><i class="fas fa-credit-card"></i> Payment Status Control</h4>
-          <div style="display: flex; gap: 1rem; align-items: center;">
+          <h4 style="color: var(--bright-orange); margin-bottom: 0.6rem;"><i class="fas fa-credit-card"></i> Payment & Monthly Subscription Control</h4>
+          <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
             <span>Current Payment State: <strong class="badge badge-${reg.paymentStatus}">${reg.paymentStatus}</strong></span>
+            ${reg.registrationStatus === 'approved' ? `
+              <button class="btn btn-secondary btn-sm" onclick="renewStudentMonth('${reg.registrationId}')" style="color: var(--bright-orange); border-color: var(--orange-border);">
+                <i class="fas fa-calendar-plus"></i> Renew / Extend +1 Month
+              </button>
+            ` : ''}
           </div>
+          ${reg.nextPaymentDue ? `
+            <div style="margin-top: 0.8rem; font-size: 0.88rem; color: var(--text-secondary);">
+              <strong>Monthly Billing Cycle:</strong> Next monthly payment due on <strong>${new Date(reg.nextPaymentDue).toLocaleDateString()}</strong>.
+            </div>
+          ` : ''}
         </div>
 
         <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
@@ -231,7 +245,30 @@ window.closeStudentModal = function() {
 };
 
 window.updateStatusAction = async function(regId, regStatus, payStatus) {
-  const success = await window.CMC_API.updateRegistrationStatus(regId, regStatus, payStatus);
+  let extraFields = {};
+  if (regStatus === 'approved') {
+    const reg = await window.CMC_API.getRegistrationById(regId);
+    const approvedAt = reg && reg.approvedAt ? reg.approvedAt : new Date().toISOString();
+    
+    // Set next payment due to exactly 1 month from approved date if not already set
+    let nextDueDate;
+    if (reg && reg.nextPaymentDue) {
+      nextDueDate = reg.nextPaymentDue;
+    } else {
+      const d = new Date(approvedAt);
+      d.setMonth(d.getMonth() + 1);
+      nextDueDate = d.toISOString();
+    }
+
+    extraFields = {
+      approvedAt: approvedAt,
+      nextPaymentDue: nextDueDate,
+      subscriptionStatus: 'active',
+      billingCycle: 'monthly'
+    };
+  }
+
+  const success = await window.CMC_API.updateRegistrationStatus(regId, regStatus, payStatus, extraFields);
   if (success) {
     window.showToast(`Registration ${regId} updated to ${regStatus}!`, 'success');
     closeStudentModal();
@@ -241,6 +278,32 @@ window.updateStatusAction = async function(regId, regStatus, payStatus) {
     }
     if (document.getElementById('students-tbody')) {
       await renderApprovedStudentsTable();
+    }
+  }
+};
+
+window.renewStudentMonth = async function(regId) {
+  const reg = await window.CMC_API.getRegistrationById(regId);
+  if (!reg) return;
+
+  const baseDate = reg.nextPaymentDue ? new Date(reg.nextPaymentDue) : new Date();
+  baseDate.setMonth(baseDate.getMonth() + 1);
+  const newDueDate = baseDate.toISOString();
+
+  const success = await window.CMC_API.updateRegistration(regId, {
+    nextPaymentDue: newDueDate,
+    paymentStatus: 'verified',
+    subscriptionStatus: 'active'
+  });
+
+  if (success && success.success !== false) {
+    window.showToast(`Next payment for ${regId} extended to ${new Date(newDueDate).toLocaleDateString()}!`, 'success');
+    closeStudentModal();
+    if (document.getElementById('students-tbody')) {
+      await renderApprovedStudentsTable();
+    }
+    if (document.getElementById('registrations-tbody')) {
+      await renderRegistrationsTable();
     }
   }
 };
@@ -279,7 +342,7 @@ async function renderApprovedStudentsTable() {
   if (approved.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
           No officially approved students yet.
         </td>
       </tr>
@@ -289,6 +352,34 @@ async function renderApprovedStudentsTable() {
 
   let html = '';
   approved.forEach((s, idx) => {
+    let dueBadge = `<span style="color: var(--text-muted); font-size: 0.85rem;">Not Scheduled</span>`;
+    if (s.nextPaymentDue) {
+      const dueDate = new Date(s.nextPaymentDue);
+      const diffDays = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) {
+        dueBadge = `
+          <span class="badge" style="background: rgba(235,87,87,0.2); color: #EB5757; font-size: 0.78rem;">
+            <i class="fas fa-exclamation-circle"></i> Overdue (${Math.abs(diffDays)}d)
+          </span>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">${dueDate.toLocaleDateString()}</div>
+        `;
+      } else if (diffDays <= 7) {
+        dueBadge = `
+          <span class="badge" style="background: rgba(245,166,35,0.2); color: var(--bright-orange); font-size: 0.78rem;">
+            <i class="fas fa-clock"></i> Due Soon (${diffDays}d)
+          </span>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">${dueDate.toLocaleDateString()}</div>
+        `;
+      } else {
+        dueBadge = `
+          <span class="badge" style="background: rgba(39,174,96,0.2); color: #27AE60; font-size: 0.78rem;">
+            <i class="fas fa-check-circle"></i> Paid (${diffDays}d left)
+          </span>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">${dueDate.toLocaleDateString()}</div>
+        `;
+      }
+    }
+
     html += `
       <tr>
         <td>#${idx + 1}</td>
@@ -297,10 +388,16 @@ async function renderApprovedStudentsTable() {
         <td>${s.email}</td>
         <td><span class="badge" style="background: rgba(244,123,32,0.15); color: var(--bright-orange);">${s.programName}</span></td>
         <td>${s.learningFormat}</td>
+        <td>${dueBadge}</td>
         <td>
-          <a href="https://wa.me/${s.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-secondary btn-sm" style="color: #25D366;">
-            <i class="fab fa-whatsapp"></i> Contact
-          </a>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-secondary btn-sm" onclick="openStudentModal('${s.registrationId}')" style="padding: 0.35rem 0.6rem; font-size: 0.8rem;">
+              <i class="fas fa-eye"></i> Details
+            </button>
+            <a href="https://wa.me/${s.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn btn-secondary btn-sm" style="color: #25D366; padding: 0.35rem 0.6rem; font-size: 0.8rem;" title="WhatsApp Contact">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
         </td>
       </tr>
     `;

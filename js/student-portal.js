@@ -148,7 +148,8 @@ async function renderStudentRegistrations(user) {
           <div>
             <p><strong>Format:</strong> ${reg.learningFormat}</p>
             <p><strong>Level:</strong> ${reg.experienceLevel}</p>
-            <p><strong>Schedule:</strong> ${(reg.preferredDays || []).join(', ')} (${reg.preferredTime})</p>
+            <p><strong>Schedule:</strong> Every ${reg.preferredDay || (reg.preferredDays || []).join(', ') || 'Saturday'}</p>
+            <p><strong>Time:</strong> ${reg.preferredTime} <span style="font-size: 0.8rem; color: var(--text-muted);">${reg.studentTimeZone ? `(${reg.studentTimeZone.split('/').pop().replace(/_/g, ' ')})` : ''} · ${reg.frequency === '2_days' ? '2 sessions × 1 hr' : '1 session × 2 hrs'}</span></p>
           </div>
           <div>
             <p><strong>Phone:</strong> ${reg.phone}</p>

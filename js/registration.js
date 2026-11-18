@@ -2,6 +2,86 @@
    CHARIS MUSIC COLLECTIVE - Multi-step Registration Wizard Engine
    ========================================================================== */
 
+// Schedule Preference Dataset (Dynamic 1 Day vs 2 Days, In-Person Studio vs Online 24/7)
+const SCHEDULE_DATA = {
+  days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  
+  // In-Person Studio Slots (Addis Ababa Operating Hours: 9:00 AM – 7:00 PM)
+  inPerson: {
+    '1_day': {
+      Morning: ['9:00 AM – 11:00 AM', '11:00 AM – 1:00 PM'],
+      Afternoon: ['2:00 PM – 4:00 PM', '4:00 PM – 6:00 PM'],
+      Evening: ['5:00 PM – 7:00 PM']
+    },
+    '2_days': {
+      Morning: ['9:00 AM – 10:00 AM', '10:00 AM – 11:00 AM', '11:00 AM – 12:00 PM', '12:00 PM – 1:00 PM'],
+      Afternoon: ['2:00 PM – 3:00 PM', '3:00 PM – 4:00 PM', '4:00 PM – 5:00 PM', '5:00 PM – 6:00 PM'],
+      Evening: ['6:00 PM – 7:00 PM']
+    }
+  },
+
+  // Online 24/7 Round-the-Clock Slots (In Student Local Timezone)
+  online: {
+    '1_day': {
+      Morning: ['6:00 AM – 8:00 AM', '8:00 AM – 10:00 AM', '10:00 AM – 12:00 PM'],
+      Afternoon: ['12:00 PM – 2:00 PM', '2:00 PM – 4:00 PM', '4:00 PM – 6:00 PM'],
+      Evening: ['6:00 PM – 8:00 PM', '7:00 PM – 9:00 PM', '9:00 PM – 11:00 PM'],
+      Night: ['11:00 PM – 1:00 AM', '1:00 AM – 3:00 AM', '3:00 AM – 5:00 AM', '4:00 AM – 6:00 AM']
+    },
+    '2_days': {
+      Morning: ['6:00 AM – 7:00 AM', '7:00 AM – 8:00 AM', '8:00 AM – 9:00 AM', '9:00 AM – 10:00 AM', '10:00 AM – 11:00 AM', '11:00 AM – 12:00 PM'],
+      Afternoon: ['12:00 PM – 1:00 PM', '1:00 PM – 2:00 PM', '2:00 PM – 3:00 PM', '3:00 PM – 4:00 PM', '4:00 PM – 5:00 PM', '5:00 PM – 6:00 PM'],
+      Evening: ['6:00 PM – 7:00 PM', '7:00 PM – 8:00 PM', '8:00 PM – 9:00 PM', '9:00 PM – 10:00 PM', '10:00 PM – 11:00 PM'],
+      Night: ['11:00 PM – 12:00 AM', '12:00 AM – 1:00 AM', '1:00 AM – 2:00 AM', '2:00 AM – 3:00 AM', '3:00 AM – 4:00 AM', '4:00 AM – 5:00 AM', '5:00 AM – 6:00 AM']
+    }
+  }
+};
+
+// Calculate Instructor's local time in Addis Ababa (EAT, UTC+3) based on student local time
+function calculateInstructorEATTime(timeSlotStr, studentTz) {
+  if (!timeSlotStr || !studentTz) return null;
+  try {
+    if (studentTz.includes('Addis_Ababa') || studentTz.includes('Nairobi')) {
+      return `${timeSlotStr} (Addis Ababa EAT)`;
+    }
+
+    const parts = timeSlotStr.split(/[–\-]/).map(s => s.trim());
+    if (parts.length < 2) return null;
+
+    const parseToHour = (tStr) => {
+      const match = tStr.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);
+      if (!match) return null;
+      let [_, h, m = '00', meridiem] = match;
+      let hour = parseInt(h);
+      if (meridiem.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (meridiem.toUpperCase() === 'AM' && hour === 12) hour = 0;
+      return { hour, minute: m };
+    };
+
+    const start = parseToHour(parts[0]);
+    const end = parseToHour(parts[1]);
+    if (!start || !end) return null;
+
+    const ref = new Date();
+    const studentHourStr = new Intl.DateTimeFormat('en-US', { timeZone: studentTz, hour: 'numeric', hourCycle: 'h23' }).format(ref);
+    const addisHourStr = new Intl.DateTimeFormat('en-US', { timeZone: 'Africa/Addis_Ababa', hour: 'numeric', hourCycle: 'h23' }).format(ref);
+    const diffHours = parseInt(addisHourStr) - parseInt(studentHourStr);
+
+    const convertSlotHour = ({ hour, minute }) => {
+      let hAddis = (hour + diffHours + 48) % 24;
+      let meridiem = hAddis >= 12 ? 'PM' : 'AM';
+      let h12 = hAddis % 12;
+      if (h12 === 0) h12 = 12;
+      return `${h12}:${minute} ${meridiem}`;
+    };
+
+    return `${convertSlotHour(start)} – ${convertSlotHour(end)} EAT`;
+  } catch (err) {
+    console.warn("Timezone calculation warning:", err);
+    return null;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
   const form = document.getElementById('registration-form');
   if (!form) return;
@@ -22,6 +102,191 @@ document.addEventListener('DOMContentLoaded', async function() {
   const urlParams = new URLSearchParams(window.location.search);
   const editId = urlParams.get('edit');
   let editingRegistration = null;
+
+  // Local Timezone Display
+  const studentTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const tzLabel = document.getElementById('detected-tz-label');
+  if (tzLabel) {
+    tzLabel.textContent = studentTz.replace(/_/g, ' ');
+  }
+
+  // Schedule Engine State & Render Functions
+  let currentFrequency = '1_day';
+  let currentActivePeriod = 'Morning';
+
+  function renderDaysSelector(frequency, preselectedDays = []) {
+    const container = document.getElementById('days-selection-container');
+    const label = document.getElementById('days-section-label');
+    const hint = document.getElementById('days-section-hint');
+    const counter = document.getElementById('days-counter-badge');
+    if (!container) return;
+
+    const isTwoDays = (frequency === '2_days');
+    if (label) label.textContent = isTwoDays ? 'Choose Your 2 Preferred Days *' : 'Choose Your Preferred Day *';
+    if (hint) hint.textContent = isTwoDays 
+      ? 'Select exactly 2 days for your 1-hour sessions (2 hours total weekly instruction).' 
+      : 'Select the single day for your 2-hour weekly class session.';
+    if (counter) {
+      counter.style.display = isTwoDays ? 'inline-block' : 'none';
+    }
+
+    let html = '';
+    SCHEDULE_DATA.days.forEach(day => {
+      const isChecked = preselectedDays.includes(day);
+      if (isTwoDays) {
+        html += `
+          <label class="day-select-pill" style="cursor: pointer; background: var(--bg-primary); padding: 0.65rem 1.1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--transition-fast);">
+            <input type="checkbox" name="preferredDayCb" value="${day}" ${isChecked ? 'checked' : ''} style="accent-color: var(--primary-orange);">
+            <strong>${day}</strong>
+          </label>
+        `;
+      } else {
+        html += `
+          <label class="day-select-pill" style="cursor: pointer; background: var(--bg-primary); padding: 0.65rem 1.1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--transition-fast);">
+            <input type="radio" name="preferredDayRadio" value="${day}" ${isChecked ? 'checked' : ''} style="accent-color: var(--primary-orange);">
+            <strong>${day}</strong>
+          </label>
+        `;
+      }
+    });
+
+    container.innerHTML = html;
+
+    if (isTwoDays) {
+      updateDayCheckboxConstraints();
+      container.querySelectorAll('input[name="preferredDayCb"]').forEach(cb => {
+        cb.addEventListener('change', updateDayCheckboxConstraints);
+      });
+    } else {
+      container.querySelectorAll('input[name="preferredDayRadio"]').forEach(r => {
+        r.addEventListener('change', updateRadioPillStyles);
+      });
+      updateRadioPillStyles();
+    }
+  }
+
+  function updateRadioPillStyles() {
+    const container = document.getElementById('days-selection-container');
+    if (!container) return;
+    container.querySelectorAll('input[name="preferredDayRadio"]').forEach(radio => {
+      const pill = radio.closest('.day-select-pill');
+      if (pill) {
+        if (radio.checked) {
+          pill.style.borderColor = 'var(--primary-orange)';
+          pill.style.background = 'rgba(244,123,32,0.12)';
+        } else {
+          pill.style.borderColor = 'var(--border-subtle)';
+          pill.style.background = 'var(--bg-primary)';
+        }
+      }
+    });
+  }
+
+  function updateDayCheckboxConstraints() {
+    const container = document.getElementById('days-selection-container');
+    const counter = document.getElementById('days-counter-badge');
+    if (!container) return;
+
+    const allCbs = container.querySelectorAll('input[name="preferredDayCb"]');
+    const checked = Array.from(allCbs).filter(cb => cb.checked);
+
+    if (counter) {
+      counter.textContent = `${checked.length} of 2 selected`;
+      counter.style.color = checked.length === 2 ? '#27AE60' : 'var(--bright-orange)';
+      counter.style.background = checked.length === 2 ? 'rgba(39,174,96,0.15)' : 'rgba(244,123,32,0.15)';
+    }
+
+    allCbs.forEach(cb => {
+      const pill = cb.closest('.day-select-pill');
+      if (pill) {
+        if (cb.checked) {
+          pill.style.borderColor = 'var(--primary-orange)';
+          pill.style.background = 'rgba(244,123,32,0.12)';
+        } else {
+          pill.style.borderColor = 'var(--border-subtle)';
+          pill.style.background = 'var(--bg-primary)';
+        }
+      }
+    });
+
+    if (checked.length >= 2) {
+      allCbs.forEach(cb => {
+        if (!cb.checked) {
+          cb.disabled = true;
+          const pill = cb.closest('.day-select-pill');
+          if (pill) {
+            pill.style.opacity = '0.4';
+            pill.style.cursor = 'not-allowed';
+          }
+        }
+      });
+    } else {
+      allCbs.forEach(cb => {
+        cb.disabled = false;
+        const pill = cb.closest('.day-select-pill');
+        if (pill) {
+          pill.style.opacity = '1';
+          pill.style.cursor = 'pointer';
+        }
+      });
+    }
+  }
+
+  function renderTimeSlots(frequency, format, activePeriod = 'Morning', preselectedSlot = null) {
+    const grid = document.getElementById('time-slots-grid');
+    const nightBtn = document.getElementById('night-period-btn');
+    const formatBadge = document.getElementById('format-hours-badge');
+    if (!grid) return;
+
+    const isOnline = (format === 'Online');
+    if (nightBtn) {
+      nightBtn.style.display = isOnline ? 'inline-flex' : 'none';
+      if (!isOnline && activePeriod === 'Night') {
+        activePeriod = 'Morning';
+        currentActivePeriod = 'Morning';
+        document.querySelectorAll('.period-chip').forEach(c => {
+          c.classList.toggle('active', c.getAttribute('data-period') === 'Morning');
+        });
+      }
+    }
+
+    if (formatBadge) {
+      if (isOnline) {
+        formatBadge.innerHTML = `<i class="fas fa-globe"></i> 24/7 Round-the-Clock Online Access`;
+        formatBadge.style.color = '#00aaff';
+        formatBadge.style.background = 'rgba(0,170,255,0.12)';
+      } else {
+        formatBadge.innerHTML = `<i class="fas fa-store-alt"></i> Studio Hours: 9:00 AM – 7:00 PM`;
+        formatBadge.style.color = 'var(--bright-orange)';
+        formatBadge.style.background = 'rgba(244,123,32,0.15)';
+      }
+    }
+
+    const dataset = isOnline ? SCHEDULE_DATA.online[frequency] : SCHEDULE_DATA.inPerson[frequency];
+    const slots = dataset ? (dataset[activePeriod] || []) : [];
+
+    if (slots.length === 0) {
+      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 1.5rem;">No slots in this period.</p>`;
+      return;
+    }
+
+    let html = '';
+    slots.forEach((slot, idx) => {
+      const isChecked = preselectedSlot ? (preselectedSlot === slot) : (idx === 0);
+      const durationLabel = frequency === '2_days' ? '1 Hour Session' : '2 Hours Session';
+      html += `
+        <label class="option-card-radio">
+          <input type="radio" name="preferredTimeSlot" value="${slot}" ${isChecked ? 'checked' : ''}>
+          <div class="option-card-content" style="padding: 1.1rem 0.8rem;">
+            <strong style="font-size: 0.95rem; color: var(--text-white);">${slot}</strong>
+            <span style="font-size: 0.78rem; color: var(--primary-orange);">${durationLabel}</span>
+          </div>
+        </label>
+      `;
+    });
+
+    grid.innerHTML = html;
+  }
 
   // Check if we are in Edit Mode
   if (editId) {
@@ -85,15 +350,23 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
 
       // Pre-fill Step 5: Schedule
-      if (Array.isArray(editingRegistration.preferredDays)) {
-        document.querySelectorAll('input[name="preferredDays"]').forEach(cb => {
-          cb.checked = editingRegistration.preferredDays.includes(cb.value);
-        });
-      }
-      if (editingRegistration.preferredTime) {
-        const timeRadio = document.querySelector(`input[name="preferredTime"][value="${editingRegistration.preferredTime}"]`);
-        if (timeRadio) timeRadio.checked = true;
-      }
+      const initialFreq = editingRegistration.frequency || (editingRegistration.preferredDays && editingRegistration.preferredDays.length === 2 ? '2_days' : '1_day');
+      currentFrequency = initialFreq;
+      const freqRadio = document.querySelector(`input[name="classFrequency"][value="${initialFreq}"]`);
+      if (freqRadio) freqRadio.checked = true;
+
+      const preDays = editingRegistration.preferredDays || (editingRegistration.preferredDay ? editingRegistration.preferredDay.split(',').map(s => s.trim()) : ['Saturday']);
+      renderDaysSelector(initialFreq, preDays);
+
+      const currentFormat = editingRegistration.learningFormat || 'Online';
+      const preSlot = editingRegistration.preferredTime;
+      const prePeriod = editingRegistration.studentTimePeriod || 'Morning';
+      currentActivePeriod = prePeriod;
+      
+      document.querySelectorAll('.period-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-period') === prePeriod);
+      });
+      renderTimeSlots(initialFreq, currentFormat, prePeriod, preSlot);
 
       // Pre-fill Step 6: Goals
       if (document.getElementById('goals') && editingRegistration.goals) {
@@ -123,7 +396,39 @@ document.addEventListener('DOMContentLoaded', async function() {
         radio.checked = true;
       }
     }
+
+    // Default schedule initialization
+    renderDaysSelector('1_day', ['Saturday']);
+    renderTimeSlots('1_day', 'Online', 'Morning');
   }
+
+  // Frequency Radio Change Handler
+  document.querySelectorAll('input[name="classFrequency"]').forEach(r => {
+    r.addEventListener('change', function() {
+      currentFrequency = this.value;
+      const format = document.querySelector('input[name="learningFormat"]:checked')?.value || 'Online';
+      renderDaysSelector(currentFrequency, currentFrequency === '2_days' ? ['Tuesday', 'Thursday'] : ['Saturday']);
+      renderTimeSlots(currentFrequency, format, currentActivePeriod);
+    });
+  });
+
+  // Period Chips Click Handler
+  document.querySelectorAll('.period-chip').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.period-chip').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentActivePeriod = this.getAttribute('data-period');
+      const format = document.querySelector('input[name="learningFormat"]:checked')?.value || 'Online';
+      renderTimeSlots(currentFrequency, format, currentActivePeriod);
+    });
+  });
+
+  // Step 4 Learning Format Change Handler
+  document.querySelectorAll('input[name="learningFormat"]').forEach(r => {
+    r.addEventListener('change', function() {
+      renderTimeSlots(currentFrequency, this.value, currentActivePeriod);
+    });
+  });
 
   // Next Step Button Click Handler
   document.querySelectorAll('.btn-next').forEach(btn => {
@@ -221,10 +526,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     if (step === 5) {
-      const checkedDays = document.querySelectorAll('input[name="preferredDays"]:checked');
-      if (checkedDays.length === 0) {
-        isValid = false;
-        errorMsg = 'Please select at least one preferred day.';
+      const freq = document.querySelector('input[name="classFrequency"]:checked')?.value || '1_day';
+      if (freq === '1_day') {
+        const selectedDay = document.querySelector('input[name="preferredDayRadio"]:checked');
+        if (!selectedDay) {
+          isValid = false;
+          errorMsg = 'Please select your preferred class day.';
+        }
+      } else {
+        const checkedDays = document.querySelectorAll('input[name="preferredDayCb"]:checked');
+        if (checkedDays.length !== 2) {
+          isValid = false;
+          errorMsg = 'Please select exactly 2 days for your weekly classes.';
+        }
+      }
+
+      if (isValid) {
+        const selectedSlot = document.querySelector('input[name="preferredTimeSlot"]:checked');
+        if (!selectedSlot) {
+          isValid = false;
+          errorMsg = 'Please choose a preferred time slot.';
+        }
       }
     }
 
@@ -270,8 +592,21 @@ document.addEventListener('DOMContentLoaded', async function() {
       const previousExperience = document.querySelector('input[name="previousExperience"]:checked')?.value || 'No';
       const learningFormat = document.querySelector('input[name="learningFormat"]:checked').value;
 
-      const preferredDays = Array.from(document.querySelectorAll('input[name="preferredDays"]:checked')).map(cb => cb.value);
-      const preferredTime = document.querySelector('input[name="preferredTime"]:checked')?.value || 'Afternoon';
+      const classFrequency = document.querySelector('input[name="classFrequency"]:checked')?.value || '1_day';
+      let selectedDays = [];
+      if (classFrequency === '1_day') {
+        const d = document.querySelector('input[name="preferredDayRadio"]:checked')?.value || 'Saturday';
+        selectedDays = [d];
+      } else {
+        selectedDays = Array.from(document.querySelectorAll('input[name="preferredDayCb"]:checked')).map(cb => cb.value);
+        if (selectedDays.length === 0) selectedDays = ['Tuesday', 'Thursday'];
+      }
+
+      const selectedSlot = document.querySelector('input[name="preferredTimeSlot"]:checked')?.value || '2:00 PM – 4:00 PM';
+      const studentTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      const activePeriod = document.querySelector('.period-chip.active')?.getAttribute('data-period') || 'Afternoon';
+      const instructorTime = calculateInstructorEATTime(selectedSlot, studentTz);
+      const sessionDuration = classFrequency === '2_days' ? '1_hour' : '2_hours';
       const goals = document.getElementById('goals').value.trim() || 'No specific goals provided.';
 
       // Check if we are modifying an existing registration
@@ -292,8 +627,14 @@ document.addEventListener('DOMContentLoaded', async function() {
           experienceLevel: experienceLevel,
           previousExperience: previousExperience,
           learningFormat: learningFormat,
-          preferredDays: preferredDays,
-          preferredTime: preferredTime,
+          frequency: classFrequency,
+          sessionDuration: sessionDuration,
+          preferredDay: selectedDays.join(', '),
+          preferredDays: selectedDays,
+          preferredTime: selectedSlot,
+          studentTimeZone: studentTz,
+          studentTimePeriod: activePeriod,
+          instructorTimeEAT: instructorTime || '',
           goals: goals
         };
 
@@ -342,8 +683,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         experienceLevel: experienceLevel,
         previousExperience: previousExperience,
         learningFormat: learningFormat,
-        preferredDays: preferredDays,
-        preferredTime: preferredTime,
+        frequency: classFrequency,
+        sessionDuration: sessionDuration,
+        preferredDay: selectedDays.join(', '),
+        preferredDays: selectedDays,
+        preferredTime: selectedSlot,
+        studentTimeZone: studentTz,
+        studentTimePeriod: activePeriod,
+        instructorTimeEAT: instructorTime || '',
         goals: goals,
         paymentStatus: 'pending',
         registrationStatus: 'pending_payment',

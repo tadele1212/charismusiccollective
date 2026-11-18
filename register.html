@@ -523,62 +523,80 @@
 
           <!-- STEP 5: Schedule -->
           <div class="form-step" data-step="5">
-            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 5: Schedule
-              Preference</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Select your preferred weekly lesson days and
-              times.</p>
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--bright-orange);">Step 5: Schedule Preference</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.8rem;">Select your weekly lesson frequency, day(s), and preferred time slot.</p>
 
-            <div class="form-group">
-              <label class="form-label">Preferred Days (Select all that apply) *</label>
-              <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Monday"> Monday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Tuesday"> Tuesday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Wednesday"> Wednesday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Thursday"> Thursday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Friday"> Friday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Saturday" checked> Saturday</label>
-                <label
-                  style="cursor: pointer; background: var(--bg-primary); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);"><input
-                    type="checkbox" name="preferredDays" value="Sunday" checked> Sunday</label>
+            <!-- 1. Weekly Class Frequency -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+              <label class="form-label">Weekly Lesson Frequency *</label>
+              <div class="option-cards-grid" style="grid-template-columns: 1fr 1fr;">
+                <label class="option-card-radio">
+                  <input type="radio" name="classFrequency" value="1_day" checked>
+                  <div class="option-card-content" style="padding: 1.5rem 1rem;">
+                    <div class="option-card-icon"><i class="fas fa-calendar-day"></i></div>
+                    <strong style="font-size: 1.1rem;">1 Day / Week</strong>
+                    <span style="font-size: 0.85rem; color: var(--primary-orange); font-weight: 600;">1 Session × 2 Hours</span>
+                    <span style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">2 hours total weekly instruction</span>
+                  </div>
+                </label>
+
+                <label class="option-card-radio">
+                  <input type="radio" name="classFrequency" value="2_days">
+                  <div class="option-card-content" style="padding: 1.5rem 1rem;">
+                    <div class="option-card-icon"><i class="fas fa-calendar-week"></i></div>
+                    <strong style="font-size: 1.1rem;">2 Days / Week</strong>
+                    <span style="font-size: 0.85rem; color: var(--primary-orange); font-weight: 600;">2 Sessions × 1 Hour</span>
+                    <span style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">2 hours total weekly instruction</span>
+                  </div>
+                </label>
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 1.5rem;">
+            <!-- 2. Preferred Day(s) Selection -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                <label class="form-label" id="days-section-label" style="margin-bottom: 0;">Choose Your Preferred Day *</label>
+                <span id="days-counter-badge" class="badge" style="background: rgba(244,123,32,0.15); color: var(--bright-orange); font-size: 0.8rem; display: none;">0 of 2 selected</span>
+              </div>
+              <p id="days-section-hint" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">Select the day for your 2-hour weekly class session.</p>
+              
+              <div id="days-selection-container" style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+
+            <!-- 3. Preferred Time Slot Selection -->
+            <div class="form-group" style="margin-top: 2rem;">
               <label class="form-label">Preferred Time Slot *</label>
-              <div class="option-cards-grid" style="grid-template-columns: repeat(3, 1fr);">
-                <label class="option-card-radio">
-                  <input type="radio" name="preferredTime" value="Morning">
-                  <div class="option-card-content">
-                    <strong>Morning</strong>
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">8:00 AM - 12:00 PM</span>
-                  </div>
-                </label>
-                <label class="option-card-radio">
-                  <input type="radio" name="preferredTime" value="Afternoon" checked>
-                  <div class="option-card-content">
-                    <strong>Afternoon</strong>
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">1:00 PM - 5:00 PM</span>
-                  </div>
-                </label>
-                <label class="option-card-radio">
-                  <input type="radio" name="preferredTime" value="Evening">
-                  <div class="option-card-content">
-                    <strong>Evening</strong>
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">5:00 PM - 9:00 PM</span>
-                  </div>
-                </label>
+
+              <!-- Local Timezone Notice Banner -->
+              <div id="schedule-tz-banner" style="background: rgba(0,136,204,0.1); border: 1px solid rgba(0,136,204,0.3); padding: 0.8rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.88rem;">
+                <div>
+                  <i class="fas fa-globe-americas" style="color: #0088cc;"></i>
+                  <span>Times shown in your local timezone: <strong id="detected-tz-label" style="color: var(--text-white);">Detecting...</strong></span>
+                </div>
+                <span id="format-hours-badge" class="badge" style="background: rgba(244,123,32,0.15); color: var(--bright-orange); font-size: 0.78rem;">24/7 Online Access</span>
+              </div>
+
+              <!-- Time-of-Day Period Tabs / Chips -->
+              <div id="period-chips-container" style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem;">
+                <button type="button" class="period-chip active" data-period="Morning">
+                  <i class="fas fa-sun text-orange"></i> Morning
+                </button>
+                <button type="button" class="period-chip" data-period="Afternoon">
+                  <i class="fas fa-cloud-sun text-orange"></i> Afternoon
+                </button>
+                <button type="button" class="period-chip" data-period="Evening">
+                  <i class="fas fa-moon text-orange"></i> Evening
+                </button>
+                <button type="button" class="period-chip" data-period="Night" id="night-period-btn">
+                  <i class="fas fa-star text-orange"></i> Night
+                </button>
+              </div>
+
+              <!-- Available Time Slots Grid for current period -->
+              <div id="time-slots-grid" class="option-cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+                <!-- Dynamically populated via JS -->
               </div>
             </div>
 
